@@ -9,7 +9,7 @@ from Game import Game
 # presets
 HEX_WIDTH = 80
 HEX_HEIGHT = 90
-BOARD_PIXEL_DIMENSIONS = 600
+BOARD_PIXEL_DIMENSIONS = 300
 NUMBER_BACKGROUND_RADIUS = 20
 NUMBER_SIZE = 25
 THIEF_HEIGHT = 60
@@ -228,10 +228,13 @@ def drawCities(board, getPlayerColor):
 
 
 def makeGraphical(_game, getPlayerColor):
+    global BOARD_PIXEL_DIMENSIONS
+    BOARD_PIXEL_DIMENSIONS += HEX_HEIGHT*1.5*_game.board.boardSize
+
     global game
     game = _game
     pygame.init()
-    screen = pygame.display.set_mode((int(1.5 * BOARD_PIXEL_DIMENSIONS), int(1.5 * BOARD_PIXEL_DIMENSIONS)))
+    screen = pygame.display.set_mode((int(1.2 * BOARD_PIXEL_DIMENSIONS), int(1.2 * BOARD_PIXEL_DIMENSIONS)))
     board = setupBoard()
 
     done = False
@@ -242,7 +245,7 @@ def makeGraphical(_game, getPlayerColor):
         screen.fill(BLACK)
 
         # Draw board
-        screen.blit(board, (int(BOARD_PIXEL_DIMENSIONS * 0.25), int(BOARD_PIXEL_DIMENSIONS * 0.25)))
+        screen.blit(board, (int(BOARD_PIXEL_DIMENSIONS * 0.1), int(BOARD_PIXEL_DIMENSIONS * 0.1)))
 
         thief_xAlign = xAlign(Board.rowWidths[game.board.thief_location[0]])
         drawThief(board,

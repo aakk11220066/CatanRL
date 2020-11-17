@@ -5,7 +5,7 @@ import Game
 
 
 def main():
-    game = Game.Game()
+    game = Game.Game(boardSize=6)
 
     game.addSettlement(position=(1,1), player=1)
     game.addRoad(point1=(1,1), point2=(1,2), player=2)

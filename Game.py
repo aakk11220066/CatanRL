@@ -6,8 +6,8 @@ import Building
 Coordinate = Tuple[int,int]
 
 class Game:
-    def __init__(self):
-        self.board = Board.Board()
+    def __init__(self, boardSize: int = 3):
+        self.board = Board.Board(boardSize=boardSize)
 
     def addSettlement(self, position: Coordinate, player: int):
         self.board.graph.nodes[("point", position)]["owner"] = player
