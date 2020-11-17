@@ -111,6 +111,15 @@ edge connecting points (i,j) and (k,l) can be accessed with:
     which returns a dictionary with the edge's attributes.
 edge attributes:
     owner: int
+    
+edge connecting point (i,j) and tile (k,l) can be accessed with:
+    Board.graph[("point", (i,j))][("tile", (k,l))]
+    currently these edges have no attributes
+    
+Graph is undirected, of course.  Every tile is connected to all 6 points around it
+    and each point is connected to the 3 points around it and the 3 tiles surrounding 
+    it.  Points, tiles, and edges on the ocean are still considered regular points, 
+    tiles, and edges. 
 '''
 class Board:
     def __init__(self, boardSize=3, thief_location=(1, 1)):  # locate thief at random location?
