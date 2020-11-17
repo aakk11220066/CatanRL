@@ -21,7 +21,7 @@ class TileType(Enum):
     OCEAN = 6
 
 
-# returns number of tiles of each type that will be in the game
+# returns the number of tiles of each type to add to the board
 def get_tile_set(board_size: int, rowWidths: List[int]) -> Dict[TileType, int]:
     num_remaining_tiles = sum(rowWidths)
     result = dict()
@@ -40,7 +40,7 @@ def get_tile_set(board_size: int, rowWidths: List[int]) -> Dict[TileType, int]:
 
     return result
 
-
+# returns how many numbers (dice rolls) of each type to add to the board
 def get_tile_number_set(board_size: int, rowWidths: List[int]) -> Dict[int, int]:
     num_tile_numbers = sum(rowWidths) - NUM_DESERTS - NUM_HEXAGON_SIDES * board_size
     result = dict()

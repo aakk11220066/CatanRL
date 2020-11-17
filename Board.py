@@ -1,5 +1,4 @@
 import networkx as nx
-
 import Tile
 from Building import BuildingTypes
 from Tile import TileType, RANDOM_SEED
@@ -15,13 +14,15 @@ NO_PLAYER = 0
 random.seed(RANDOM_SEED)
 
 
+# returns the coordinates of all 6 points around the given tile (all 6 corners of the hexagon)
 def get_point_coordinates_around_tile(tile_position: Coordinate):
     for local_row in range(2):
         for local_col in range(3):
             yield tile_position[0] + local_row, 2 * tile_position[1] + local_col
 
 
-def _hexagonalBoard(_size: int):
+# returns a standard hexagonal board to play on
+def _hexagonalBoard(_size: int) -> nx.Graph:
     assert (_size > 0)
     size = _size + 1  # account for ocean surrounding board
     result = nx.Graph()
@@ -37,7 +38,7 @@ def _hexagonalBoard(_size: int):
 
             # add tile
             # select type
-            if row == 0 or col == 0 or col == rowWidth-1 or row == len(rowWidths)-1:
+            if row == 0 or col == 0 or col == rowWidth - 1 or row == len(rowWidths) - 1:
                 tile_type = TileType.OCEAN
             else:
                 tile_type = choice(list(tile_set.keys()))
@@ -54,7 +55,7 @@ def _hexagonalBoard(_size: int):
                 if number_set[tile_number] == 0:
                     del number_set[tile_number]
             else:
-                tile_number = 0 # impossible dice roll
+                tile_number = 0  # impossible dice roll
             result.add_node(
                 ("tile", tile_coordinates),
                 position=tile_coordinates,
@@ -87,12 +88,36 @@ def _hexagonalBoard(_size: int):
     return result
 
 
-class Board:
-    def _add_thief(self, thief_location: Coordinate):
-        self.graph.nodes[("tile", thief_location)]['thief'] = True
-        self.thief_location = thief_location
+'''
+tile at position (i,j) can be accessed with: Board.graph.nodes[("tile", (i,j))]
+    which returns a dictionary with the tile's attributes.  Note that points and
+    tiles are indexed in the same way as PyCatan library indexed them.
+tile attributes: 
+    position: Coordinate
+    tile_type: Tile.TileType
+    number: int
+    thief: boolean
+    
+point at position (i,j) can be accessed with: Board.graph.nodes[("point", (i,j))]
+    which returns a dictionary with the point's attributes.  Note that points and
+    tiles are indexed in the same way as PyCatan library indexed them.
+point attributes:
+    position: Coordinate
+    owner: int
+    building: Building.BuildingTypes
 
+edge connecting points (i,j) and (k,l) can be accessed with: 
+    Board.graph[("point", (i,j))][("point", (k,l))]
+    which returns a dictionary with the edge's attributes.
+edge attributes:
+    owner: int
+'''
+class Board:
     def __init__(self, boardSize=3, thief_location=(1, 1)):  # locate thief at random location?
         self.graph = _hexagonalBoard(boardSize)
         self.boardSize = boardSize
         self._add_thief(thief_location)
+
+    def _add_thief(self, thief_location: Coordinate):
+        self.graph.nodes[("tile", thief_location)]['thief'] = True
+        self.thief_location = thief_location
