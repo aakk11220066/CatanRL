@@ -1,7 +1,8 @@
 import networkx as nx
 import Tile
 from Building import BuildingTypes
-from Tile import TileType, RANDOM_SEED
+from Tile import TileType
+from Shared_Constants import RANDOM_SEED, NO_PLAYER
 from typing import Tuple, List
 from random import choice
 import random
@@ -9,7 +10,6 @@ import random
 Coordinate = Tuple[int, int]
 rowWidths: List  # defined by _hexagonalBoard
 
-NO_PLAYER = 0
 
 random.seed(RANDOM_SEED)
 
@@ -126,7 +126,16 @@ class Board:
         self.graph = _hexagonalBoard(boardSize)
         self.boardSize = boardSize
         self._add_thief(thief_location)
+        self.longest_road_owner = NO_PLAYER
+        self.longest_road_length = 1
 
     def _add_thief(self, thief_location: Coordinate):
         self.graph.nodes[("tile", thief_location)]['thief'] = True
         self.thief_location = thief_location
+
+
+    def get_road_length(self, new_road: Tuple[Coordinate, Coordinate], player) -> int:
+        player_subgraph = self.graph.subgraph((u,v) for u,v,edge in self.graph.edges(data=True)
+                           if "owner" in edge and edge["owner"] == player)
+
+        # TODO: implement

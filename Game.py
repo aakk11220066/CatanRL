@@ -2,23 +2,51 @@ from typing import Tuple
 
 import Board
 import Building
+import Exceptions
+from Player import Player
+from Shared_Constants import NO_PLAYER
 
-Coordinate = Tuple[int,int]
+Coordinate = Tuple[int, int]
+Player_number = int
 
 class Game:
-    def __init__(self, boardSize: int = 3):
-        self.board = Board.Board(boardSize=boardSize)
+    def __init__(self, board_size: int = 3, num_players: int = 3):
+        self.board = Board.Board(boardSize=board_size)
+        self.players = [Player()]*num_players
 
-    def addSettlement(self, position: Coordinate, player: int):
-        self.board.graph.nodes[("point", position)]["owner"] = player
+    def addSettlement(self, position: Coordinate, player_num: Player_number, start_of_game: bool = False):
+        if not Building.is_valid_settlement_position(self.board.graph, position, player_num, start_of_game):
+            raise Exceptions.InvalidSettlementPlacementException()
+        self.players[player_num-1].spend_resources(wood=1, brick=1, wheat=1, sheep=1)
+
+        self.board.graph.nodes[("point", position)]["owner"] = player_num
         self.board.graph.nodes[("point", position)]["building"] = Building.BuildingTypes.Settlement
-        # TODO: complete this function
+        self.players[player_num - 1].victory_points += 1
 
-    def addCity(self, position: Coordinate, player: int):
-        self.board.graph.nodes[("point", position)]["owner"] = player
+    def addCity(self, position: Coordinate, player_num: Player_number):
+        if not Building.is_valid_city_position(self.board.graph, position, player_num):
+            raise Exceptions.InvalidCityPlacementException()
+        self.players[player_num-1].spend_resources(wheat=2, ore=3)
+
+        self.board.graph.nodes[("point", position)]["owner"] = player_num
         self.board.graph.nodes[("point", position)]["building"] = Building.BuildingTypes.City
-        # TODO: complete this function
+        self.players[player_num - 1].victory_points += 1
 
-    def addRoad(self, point1: Coordinate, point2: Coordinate, player: int):
-        self.board.graph[("point", point1)][("point", point2)]["owner"] = player
-        # TODO: complete this function
+    
+    def _award_longest_road(self, loser: Player_number, award_to: Player_number):
+        if loser != NO_PLAYER:
+            self.players[loser-1] -= 2
+        self.players[award_to-1] += 2
+        self.board.longest_road_owner = award_to
+        self.board.longest_road_length = self.board.get_road_length()
+
+
+    def addRoad(self, point1: Coordinate, point2: Coordinate, player_num: Player_number):
+        if not Building.is_valid_road_position(self.board.graph, point1, point2, player_num):
+            raise Exceptions.InvalidRoadPlacementException()
+        self.players[player_num-1].spend_resources(wood=1, brick=1)
+
+        self.board.graph[("point", point1)][("point", point2)]["owner"] = player_num
+
+        if self.board.get_road_length() > self.board.longest_road_length:
+            self._award_longest_road(loser=self.board.longest_road_owner, award_to=player_num)

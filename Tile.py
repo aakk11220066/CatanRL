@@ -2,11 +2,12 @@ from enum import Enum
 from typing import Dict, List
 import random
 
+from Shared_Constants import RANDOM_SEED
+
 NUM_HEXAGON_SIDES = 6
 NUM_DESERTS = 1
 NUM_TILE_TYPES = 7
 NUM_NUMBERS = 12  # number of possible dice rolls
-RANDOM_SEED = 42
 
 random.seed(RANDOM_SEED)
 
