@@ -38,7 +38,6 @@ class Game:
             self.players[loser-1] -= 2
         self.players[award_to-1] += 2
         self.board.longest_road_owner = award_to
-        self.board.longest_road_length = self.board.get_road_length()
 
 
     def addRoad(self, point1: Coordinate, point2: Coordinate, player_num: Player_number):
@@ -48,5 +47,7 @@ class Game:
 
         self.board.graph[("point", point1)][("point", point2)]["owner"] = player_num
 
-        if self.board.get_road_length() > self.board.longest_road_length:
+        players_longest_road = self.board.get_longest_road_length(player=player_num)
+        if players_longest_road > self.board.longest_road_length:
+            self.board.longest_road_length = players_longest_road
             self._award_longest_road(loser=self.board.longest_road_owner, award_to=player_num)
