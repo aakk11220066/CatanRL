@@ -12,7 +12,7 @@ Player_number = int
 class Game:
     def __init__(self, board_size: int = 3, num_players: int = 3):
         self.board = Board.Board(boardSize=board_size)
-        self.players = [Player()]*num_players
+        self.players = [Player() for _ in range(num_players)]
 
     def addSettlement(self, position: Coordinate, player_num: Player_number, start_of_game: bool = False):
         if not Building.is_valid_settlement_position(self.board.graph, position, player_num, start_of_game):
@@ -35,8 +35,8 @@ class Game:
     
     def _award_longest_road(self, loser: Player_number, award_to: Player_number):
         if loser != NO_PLAYER:
-            self.players[loser-1] -= 2
-        self.players[award_to-1] += 2
+            self.players[loser-1].victory_points -= 2
+        self.players[award_to-1].victory_points += 2
         self.board.longest_road_owner = award_to
 
 

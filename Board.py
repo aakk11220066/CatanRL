@@ -134,20 +134,21 @@ class Board:
         self.thief_location = thief_location
 
     def get_longest_road_length(self, player: int) -> int:
-        player_subgraph = self.graph.subgraph((u, v) for u, v, edge in self.graph.edges(data=True)
-                                              if "owner" in edge and edge["owner"] == player)
+        players_edges = list((u,v) for u,v,edge in self.graph.edges(data=True)
+                             if "owner" in edge and edge["owner"] == player)
+        player_subgraph = nx.Graph(players_edges)
         longest_road_length = 0
         for point in player_subgraph.nodes:
-            longest_road_length = max(longest_road_length, self._get_road_length(point, player))
+            longest_road_length = max(longest_road_length, _get_road_length(player_subgraph, road_start=point, player=player))
 
         return longest_road_length
 
-    def _get_road_length(self, road_start: Coordinate, player) -> int: # DFS
-        self.graph.nodes[road_start]["visited"] = None
-        longest_branch = 0
-        for end in \
-            (end for start, end, attributes in self.graph.edges(road_start, data=True)
-             if "visited" not in attributes):
-            longest_branch = max(longest_branch, self._get_road_length(road_start=end, player=player))
-        del self.graph.nodes[road_start]["visited"]
-        return longest_branch
+def _get_road_length(player_subgraph: nx.Graph, road_start: Coordinate, player) -> int: # DFS
+    longest_branch = 0
+    for start, end in \
+        ((start, end) for start, end, attributes in player_subgraph.edges(road_start, data=True)
+         if "visited" not in attributes):
+        player_subgraph.edges[start, end]["visited"] = None
+        longest_branch = max(longest_branch, 1+_get_road_length(player_subgraph, road_start=end, player=player))
+        del player_subgraph.edges[start, end]["visited"]
+    return longest_branch
