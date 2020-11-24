@@ -227,12 +227,10 @@ def drawCities(board, getPlayerColor):
                             )
 
 
-def makeGraphical(_game, getPlayerColor):
+def makeGraphical(getPlayerColor):
     global BOARD_PIXEL_DIMENSIONS
-    BOARD_PIXEL_DIMENSIONS += HEX_HEIGHT*1.5*_game.board.boardSize
+    BOARD_PIXEL_DIMENSIONS += HEX_HEIGHT*1.5*game.board.boardSize
 
-    global game
-    game = _game
     pygame.init()
     screen = pygame.display.set_mode((int(1.2 * BOARD_PIXEL_DIMENSIONS), int(1.2 * BOARD_PIXEL_DIMENSIONS)))
     board = setupBoard()
@@ -266,3 +264,18 @@ def makeGraphical(_game, getPlayerColor):
         # Update the screen
         clock.tick()
         pygame.display.flip()
+
+# player_num number's binary representation sets his RGB value
+def default_player_colors(player: int):
+    return 255 * (player % 2), 255 * ((player // 2) % 2), 255 * (player // 4)
+
+
+class GUI(pygame.threads.Thread):
+    def __init__(self, _game: Game, getPlayerColor=default_player_colors):
+        super().__init__()
+        global game
+        game = _game
+        self.getPlayerColor = getPlayerColor
+
+    def run(self):
+        makeGraphical(self.getPlayerColor)
