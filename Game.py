@@ -4,7 +4,7 @@ from typing import Tuple
 import Board
 import Building
 import Exceptions
-from Player import Player
+from RandomPlayer import RandomPlayer
 from Shared_Constants import NO_PLAYER
 
 Coordinate = Tuple[int, int]
@@ -14,13 +14,13 @@ Player_number = int
 class Game:
     """
     :param board_size: number of tiles along each side of the hexagonal board
-    :param function_delay: how long to wait after performing each public function.
+    :param function_delay: how long (in seconds) to wait after performing each public function.
         Used to allow humans watching the GUI to watch the game unfold turn by turn
     """
 
     def __init__(self, board_size: int = 3, num_players: int = 3, function_delay=0):
         self.board = Board.Board(boardSize=board_size)
-        self.players = [Player() for _ in range(num_players)]
+        self.players = [RandomPlayer() for _ in range(num_players)]
         self.function_delay = function_delay
 
     def addSettlement(self, position: Coordinate, player_num: Player_number, start_of_game: bool = False):
