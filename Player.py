@@ -25,7 +25,7 @@ class Player(ABC):
         self.resources["ore"] -= ore
 
     @abstractmethod
-    def move_thief(self, board: Board): # TODO: delete this method.  Should be implemented in subclasses, not here
+    def move_thief(self, board: Board): # TODO: AKIVA: delete this method.  Should be implemented in subclasses, not here
         tiles = dict((k, v) for k, v in board.graph.nodes.items() if k[0] == "tile")
         for tile in tiles.values():
             if tile['thief'] == True:
