@@ -4,8 +4,9 @@ import Game
 
 def main():
     game = Game.Game(board_size=3, function_delay=1)
-    game.rollDice(player_num=1)
     GUI(game).start()
+
+    game.rollDice(player_num=1)
 
     game.addSettlement(position=(1, 1), player_num=1, start_of_game=True)
     game.addRoad(point1=(1, 1), point2=(1, 2), player_num=1)

@@ -5,7 +5,7 @@ from typing import Tuple
 import Board
 import Building
 import Exceptions
-from Player import Player
+from RandomPlayer import RandomPlayer
 from Shared_Constants import NO_PLAYER
 
 Coordinate = Tuple[int, int]
@@ -21,7 +21,8 @@ class Game:
 
     def __init__(self, board_size: int = 3, num_players: int = 3, function_delay=0):
         self.board = Board.Board(boardSize=board_size)
-        self.players = [Player() for _ in range(num_players)]
+        # Note: player number i should go in cell number i-1 (e.g. player 1 goes in cell 0)
+        self.players = [RandomPlayer() for _ in range(num_players)] # TODO: add non random players as well
         self.function_delay = function_delay
 
     def addSettlement(self, position: Coordinate, player_num: Player_number, start_of_game: bool = False):
@@ -68,11 +69,11 @@ class Game:
 
     def rollDice(self, player_num: Player_number):
         dice = random.randint(1, 6) + random.randint(1, 6)
-        dice = 7
+        dice = 7 # FIXME: delete
         if dice==7:
             for player in self.players:
-                if player.get_number_of_resources()>7:
-                    player.cutting_cards_in_half()
+                if player._get_number_of_resources()>7:
+                    player.dropHalfCards()
             self.players[player_num].move_thief(self.board)
         else:
             tiles = dict((k, v) for k, v in self.board.graph.nodes.items() if k[0] == "tile")
