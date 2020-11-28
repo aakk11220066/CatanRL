@@ -41,22 +41,21 @@ def get_tile_set(board_size: int, rowWidths: List[int]) -> Dict[TileType, int]:
 
     return result
 
-
 # returns how many numbers (dice rolls) of each type to add to the board
 def get_tile_number_set(board_size: int, rowWidths: List[int]) -> Dict[int, int]:
     num_tile_numbers = sum(rowWidths) - NUM_DESERTS - NUM_HEXAGON_SIDES * board_size
     result = dict()
     for i in range(12):
-        result[i + 1] = 0
+        result[i+1] = 0
     for _ in range(num_tile_numbers):
         roll1 = random.randint(1, 6)
         roll2 = random.randint(1, 6)
-        while roll1 + roll2 == 7:
-            roll1 = random.randint(1, 6)
-            roll2 = random.randint(1, 6)
+        while roll1+roll2 == 7:
+            roll1 = random.randint(1,6)
+            roll2 = random.randint(1,6)
         result[roll1 + roll2] += 1
     for i in range(12):
-        if result[i + 1] == 0:
-            del result[i + 1]
+        if result[i+1] == 0:
+            del result[i+1]
 
     return result

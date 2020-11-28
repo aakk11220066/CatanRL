@@ -4,6 +4,7 @@ import Game
 
 def main():
     game = Game.Game(board_size=3, function_delay=1)
+    game.rollDice(player_num=1)
     GUI(game).start()
 
     game.addSettlement(position=(1, 1), player_num=1, start_of_game=True)

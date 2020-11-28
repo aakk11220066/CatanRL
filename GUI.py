@@ -169,23 +169,21 @@ def drawRoads(board, getPlayerColor):
     for point_one_coordinates, point_two_coordinates in (
             (tagged_point1[1], tagged_point2[1]) for tagged_point1, tagged_point2 in game.board.graph.edges
             if (tagged_point1[0], tagged_point2[0]) == ("point", "point")
-               and game.board.graph[tagged_point1][tagged_point2]["owner"] != Board.NO_PLAYER
+            and game.board.graph[tagged_point1][tagged_point2]["owner"] != Board.NO_PLAYER
     ):
         pygame.draw.line(board,
-                         getPlayerColor(
-                             game.board.graph[("point", point_one_coordinates)][("point", point_two_coordinates)][
-                                 "owner"]),
-                         getCornerCoordinates(point_one_coordinates),
-                         getCornerCoordinates(point_two_coordinates),
-                         ROAD_THICKNESS
-                         )
+            getPlayerColor(game.board.graph[("point", point_one_coordinates)][("point", point_two_coordinates)]["owner"]),
+            getCornerCoordinates(point_one_coordinates),
+            getCornerCoordinates(point_two_coordinates),
+            ROAD_THICKNESS
+        )
 
 
 def drawSettlements(board, getPlayerColor):
     for point in (game.board.graph.nodes[tagged_point] for tagged_point in game.board.graph.nodes
-                  if tagged_point[0] == 'point'
-                     and (game.board.graph.nodes[tagged_point]["building"]) == Building.BuildingTypes.Settlement
-                  ):
+                if tagged_point[0] == 'point'
+                and (game.board.graph.nodes[tagged_point]["building"]) == Building.BuildingTypes.Settlement
+                ):
         rectangle_topLeftCorner = list(getCornerCoordinates(point["position"]))
         color = getPlayerColor(point["owner"])
         rectangle_topLeftCorner[0] = rectangle_topLeftCorner[0] - SETTLEMENT_WIDTH / 2
@@ -206,9 +204,9 @@ def drawSettlements(board, getPlayerColor):
 
 def drawCities(board, getPlayerColor):
     for point in (game.board.graph.nodes[tagged_point] for tagged_point in game.board.graph.nodes
-                  if tagged_point[0] == 'point'
-                     and (game.board.graph.nodes[tagged_point]["building"]) == Building.BuildingTypes.City
-                  ):
+                if tagged_point[0] == 'point'
+                and (game.board.graph.nodes[tagged_point]["building"]) == Building.BuildingTypes.City
+                ):
         city_topLeftCorner = list(getCornerCoordinates(point["position"]))
         color = getPlayerColor(point["owner"])
         city_topLeftCorner[0] = city_topLeftCorner[0] - CITY_WIDTH / 4
@@ -231,7 +229,7 @@ def drawCities(board, getPlayerColor):
 
 def makeGraphical(getPlayerColor):
     global BOARD_PIXEL_DIMENSIONS
-    BOARD_PIXEL_DIMENSIONS += HEX_HEIGHT * 1.5 * game.board.boardSize
+    BOARD_PIXEL_DIMENSIONS += HEX_HEIGHT*1.5*game.board.boardSize
 
     pygame.init()
     screen = pygame.display.set_mode((int(1.2 * BOARD_PIXEL_DIMENSIONS), int(1.2 * BOARD_PIXEL_DIMENSIONS)))
@@ -266,7 +264,6 @@ def makeGraphical(getPlayerColor):
         # Update the screen
         clock.tick()
         pygame.display.flip()
-
 
 # player_num number's binary representation sets his RGB value
 def default_player_colors(player: int):
