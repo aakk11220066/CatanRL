@@ -68,4 +68,4 @@ def _road_is_connected(board: Graph, road: Tuple[Coordinate, Coordinate], player
 def is_valid_road_position(board: Graph, point1: Coordinate, point2: Coordinate, player: int):
     return _edge_location_available(board, point1, point2) \
            and _road_is_connected(board, (point1, point2), player) \
-           and (_on_land(board, point1) or _on_land(board, point2))
+           and (_on_land(board, point1) and _on_land(board, point2))

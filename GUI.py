@@ -157,6 +157,10 @@ def drawThief(board, topLeftCorner: Coordinate):
 
 
 def getCornerCoordinates(cornerIndex: Coordinate):
+    # offset of bottom half of board because top indices of hexagon now have higher index than lower
+    if Board.get_board_half(cornerIndex[0], game.board.boardSize+1) == "lower":
+        cornerIndex = cornerIndex[0], cornerIndex[1]-1
+
     rowWidth = Board.rowWidths[cornerIndex[0]]
     return (
         xAlign(rowWidth) + (cornerIndex[1] * (HEX_WIDTH / 2)),

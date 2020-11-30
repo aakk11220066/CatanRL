@@ -5,8 +5,10 @@ from typing import Tuple
 import Board
 import Building
 import Exceptions
+import Shared_Constants
 from RandomPlayer import RandomPlayer
 from Shared_Constants import NO_PLAYER
+from Tile import tiletype_to_resourcetype
 
 Coordinate = Tuple[int, int]
 Player_number = int
@@ -24,6 +26,15 @@ class Game:
         # Note: player number i should go in cell number i-1 (e.g. player 1 goes in cell 0)
         self.players = [RandomPlayer() for _ in range(num_players)] # TODO: add non random players as well
         self.function_delay = function_delay
+
+    def _collect_surrounding_resources(self, settlement_location: Coordinate):
+        player_num = self.board.graph.nodes[("point", settlement_location)]["owner"]
+        assert (player_num != Shared_Constants.NO_PLAYER)
+        for tile_type in map(lambda tile_label: self.board.graph.nodes[tile_label]["tile_type"],
+                             self.board.get_surrounding_tiles(settlement_location)):
+            resource_type = tiletype_to_resourcetype(tile_type)
+            if resource_type:
+                self.players[player_num].resources[resource_type] += 1
 
     def addSettlement(self, position: Coordinate, player_num: Player_number, start_of_game: bool = False):
         if not Building.is_valid_settlement_position(self.board.graph, position, player_num, start_of_game):
@@ -59,7 +70,6 @@ class Game:
         self.players[player_num - 1].spend_resources(wood=1, brick=1)
 
         self.board.graph[("point", point1)][("point", point2)]["owner"] = player_num
-
         players_longest_road = self.board.get_longest_road_length(player=player_num)
         if players_longest_road > self.board.longest_road_length:
             self.board.longest_road_length = players_longest_road

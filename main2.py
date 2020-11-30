@@ -78,7 +78,7 @@ def main():
 if __name__ == "__main__":
     main()
 
-    # game = Game.Game(board_size=3)
+    # game = Game.Game(actual_board_size=3)
 
     # game.addSettlement(position=(1,1), player_num=1, start_of_game=True)
     # game.addRoad(point1=(1,1), point2=(1,2), player_num=1)

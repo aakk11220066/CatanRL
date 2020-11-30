@@ -21,6 +21,20 @@ class TileType(Enum):
     DESERT = 5
     OCEAN = 6
 
+def tiletype_to_resourcetype(tiletype: TileType):
+    if tiletype==TileType.FOREST:
+        return "wood"
+    if tiletype==TileType.FIELDS:
+        return "wheat"
+    if tiletype==TileType.PASTURE:
+        return "sheep"
+    if tiletype==TileType.MOUNTAINS:
+        return "ore"
+    if tiletype==TileType.HILLS:
+        return "brick"
+    if tiletype==TileType.DESERT or tiletype==TileType.OCEAN:
+        return None
+
 
 # returns the number of tiles of each type to add to the board
 def get_tile_set(board_size: int, rowWidths: List[int]) -> Dict[TileType, int]:

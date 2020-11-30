@@ -18,31 +18,23 @@ random.seed(RANDOM_SEED)
 # returns the coordinates of all 6 points around the given tile (all 6 corners of the hexagon)
 def get_point_coordinates_around_tile(tile_position: Coordinate, half_of_board: str):
     assert (half_of_board in ["upper", "middle", "lower"])
-    # Hexagonal board causes offset between column indices of top points of tile and bottom point
-    # due to different starting indices.  Exception is the middle row of the board.
-    if half_of_board == "upper":
-        hexagon_top_bottom_index_offset = 1
-    if half_of_board == "lower":
-        hexagon_top_bottom_index_offset = -1
-    if half_of_board == "middle":
-        hexagon_top_bottom_index_offset = 0
+    for local_row, local_col in [(0,0), (0,1), (0,2), (1,2), (1,1), (1,0), (0,0)]:
+        result = [tile_position[0] + local_row, 2 * tile_position[1] + local_col]
 
-    for local_row, local_col in [
-        (0,0), (0,1), (0,2),
-        (1,2+hexagon_top_bottom_index_offset),
-        (1,1+hexagon_top_bottom_index_offset),
-        (1,0+hexagon_top_bottom_index_offset),
-        (0,0)
-    ]:
-        yield tile_position[0] + local_row, 2 * tile_position[1] + local_col
+        # Hexagonal board causes offset between column indices of top points of tile and bottom point
+        # due to different starting indices.  Exception is the middle row of the board.
+        if (local_row==1 and half_of_board=="upper") or (local_row==0 and half_of_board=="lower"):
+            result[1] += 1
+
+        yield tuple(result)
 
 
 # returns a standard hexagonal board to play on
-def get_board_half(row: int, board_size: int) -> str:
-    assert(row >= 0 and board_size > 0)
-    if row < board_size-1:
+def get_board_half(row: int, actual_board_size: int) -> str:
+    assert(row >= 0 and actual_board_size > 0)
+    if row < actual_board_size-1:
         return "upper"
-    if row == board_size-1:
+    if row == actual_board_size-1:
         return "middle"
     return "lower"
 
@@ -163,6 +155,8 @@ class Board:
                              if "owner" in edge and edge["owner"] == player)
         player_subgraph = nx.Graph(players_edges)
         longest_road_length = 0
+
+        # NOTE: this loop a exponential time, presents a serious bottleneck
         for point in player_subgraph.nodes:
             longest_road_length = max(longest_road_length, _get_road_length(player_subgraph, road_start=point, player=player))
 
@@ -179,6 +173,13 @@ class Board:
             lambda edge_label: is_valid_road_position(self.graph, edge_label[0][1], edge_label[1][1], player) and edge_label[0][0]=="point" and edge_label[1][0]=="point",
             self.graph.edges
         )
+
+    def get_surrounding_tiles(self, settlement_location: Coordinate):
+        return filter(
+            lambda node_label: node_label[0]=="tile",
+            self.graph.neighbors(("point", settlement_location))
+        )
+
 
 def _get_road_length(player_subgraph: nx.Graph, road_start: Coordinate, player) -> int: # DFS
     longest_branch = 0
