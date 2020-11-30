@@ -1,9 +1,10 @@
 import networkx as nx
 import Tile
 from Building import BuildingTypes
+from Building import is_valid_settlement_position, is_valid_road_position
 from Tile import TileType
 from Shared_Constants import RANDOM_SEED, NO_PLAYER
-from typing import Tuple, List
+from typing import Tuple, List, Iterable
 from random import choice
 import random
 
@@ -15,15 +16,39 @@ random.seed(RANDOM_SEED)
 
 
 # returns the coordinates of all 6 points around the given tile (all 6 corners of the hexagon)
-def get_point_coordinates_around_tile(tile_position: Coordinate):
-    for local_row in range(2):
-        for local_col in range(3):
-            yield tile_position[0] + local_row, 2 * tile_position[1] + local_col
+def get_point_coordinates_around_tile(tile_position: Coordinate, half_of_board: str):
+    assert (half_of_board in ["upper", "middle", "lower"])
+    # Hexagonal board causes offset between column indices of top points of tile and bottom point
+    # due to different starting indices.  Exception is the middle row of the board.
+    if half_of_board == "upper":
+        hexagon_top_bottom_index_offset = 1
+    if half_of_board == "lower":
+        hexagon_top_bottom_index_offset = -1
+    if half_of_board == "middle":
+        hexagon_top_bottom_index_offset = 0
+
+    for local_row, local_col in [
+        (0,0), (0,1), (0,2),
+        (1,2+hexagon_top_bottom_index_offset),
+        (1,1+hexagon_top_bottom_index_offset),
+        (1,0+hexagon_top_bottom_index_offset),
+        (0,0)
+    ]:
+        yield tile_position[0] + local_row, 2 * tile_position[1] + local_col
 
 
 # returns a standard hexagonal board to play on
+def get_board_half(row: int, board_size: int) -> str:
+    assert(row >= 0 and board_size > 0)
+    if row < board_size-1:
+        return "upper"
+    if row == board_size-1:
+        return "middle"
+    return "lower"
+
+
 def _hexagonalBoard(_size: int) -> nx.Graph:
-    assert (_size > 0)
+    assert (_size > 1)
     size = _size + 1  # account for ocean surrounding board
     result = nx.Graph()
 
@@ -65,7 +90,7 @@ def _hexagonalBoard(_size: int) -> nx.Graph:
             )
 
             prev_point_coordinates = None
-            for point_coordinates in get_point_coordinates_around_tile(tile_coordinates):
+            for point_coordinates in get_point_coordinates_around_tile(tile_coordinates, get_board_half(row, size)):
                 # add surrounding points
                 result.add_node(
                     ("point", point_coordinates),
@@ -142,6 +167,18 @@ class Board:
             longest_road_length = max(longest_road_length, _get_road_length(player_subgraph, road_start=point, player=player))
 
         return longest_road_length
+
+    def get_valid_settlement_locations(self, player: int, start_of_game: bool = False) -> Iterable[Tuple[str,Coordinate]]:
+        return filter(
+            lambda node_label: is_valid_settlement_position(self.graph, node_label[1], player, start_of_game) and node_label[0]=="point",
+            self.graph.nodes
+        )
+
+    def get_valid_road_locations(self, player) -> Iterable[Tuple[Tuple[str,Coordinate], Tuple[str,Coordinate]]]:
+        return filter(
+            lambda edge_label: is_valid_road_position(self.graph, edge_label[0][1], edge_label[1][1], player) and edge_label[0][0]=="point" and edge_label[1][0]=="point",
+            self.graph.edges
+        )
 
 def _get_road_length(player_subgraph: nx.Graph, road_start: Coordinate, player) -> int: # DFS
     longest_branch = 0
