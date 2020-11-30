@@ -3,6 +3,7 @@ from typing import Tuple
 from networkx import Graph
 
 from Shared_Constants import NO_PLAYER
+from Tile import TileType
 
 Coordinate = Tuple[int, int]
 
@@ -13,9 +14,21 @@ class BuildingTypes(Enum):
     City = 2
 
 
+def _on_land(board: Graph, position: Coordinate):
+
+    return any(
+        map(
+            lambda neighbor_label: "tile_type" in board.nodes[neighbor_label]
+                                   and board.nodes[neighbor_label]["tile_type"] != TileType.OCEAN,
+            board.neighbors(("point", position))
+        )
+    )
+
+
 def _settlement_location_available(board: Graph, position: Coordinate):
     return board.has_node(("point", position)) \
-           and board.nodes[("point", position)]["building"] == BuildingTypes.Empty
+           and board.nodes[("point", position)]["building"] == BuildingTypes.Empty \
+           and _on_land(board, position)
 
 
 def _point_connected_to_road(board: Graph, position: Coordinate, player: int):
@@ -48,14 +61,11 @@ def _edge_location_available(board: Graph, point1: Coordinate, point2: Coordinat
 
 
 def _road_is_connected(board: Graph, road: Tuple[Coordinate, Coordinate], player: int):
-    return any(road_end["owner"] == player
-               for road_end in [board.nodes[("point", road[0])], board.nodes[("point", road[0])]]
-               if "owner" in road_end) \
+    return board.nodes[("point",road[0])]["owner"] == player or board.nodes[("point",road[1])]["owner"] == player \
            or any(_point_connected_to_road(board, point, player) for point in road)
 
 
 def is_valid_road_position(board: Graph, point1: Coordinate, point2: Coordinate, player: int):
-    loc_av = _edge_location_available(board, point1, point2)
-    rd_con = _road_is_connected(board, (point1, point2), player)
     return _edge_location_available(board, point1, point2) \
-           and _road_is_connected(board, (point1, point2), player)
+           and _road_is_connected(board, (point1, point2), player) \
+           and (_on_land(board, point1) or _on_land(board, point2))
