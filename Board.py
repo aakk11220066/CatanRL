@@ -82,7 +82,7 @@ def _hexagonalBoard(_size: int) -> nx.Graph:
             )
 
             prev_point_coordinates = None
-            for point_coordinates in get_point_coordinates_around_tile(tile_coordinates, get_board_half(row, size)):
+            for point_coordinates in get_point_coordinates_around_tile(tile_coordinates, size):
                 # add surrounding points
                 result.add_node(
                     ("point", point_coordinates),
