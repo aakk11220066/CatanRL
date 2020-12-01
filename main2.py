@@ -9,7 +9,8 @@ def swapPositions(list, pos1, pos2):
     list[pos1], list[pos2] = list[pos2], list[pos1]
     return list
 
-def makeOrderPlayerGame(num_of_players, num_of_bots):
+
+def makeOrderPlayerGame(num_of_players):
     players = [x + 1 for x in list(range(num_of_players))]
     '''len = num_of_players
     order_player_game = []
@@ -22,7 +23,8 @@ def makeOrderPlayerGame(num_of_players, num_of_bots):
         swapPositions(players, player - 1, len - 1)
         len -= 1
     return order_player_game'''
-    return players
+    return list(zip(players, ["BOT"] * num_of_players))
+
 
 def enterParametersGame():
     # Defined board size (scale)
@@ -38,27 +40,27 @@ def enterParametersGame():
         num_of_bots = int(input(
             "Illegal number of computer bots. Try again.\nHow many computer bots are playing? (from 0 to " + str(
                 num_of_players) + "): "))
-    order_player_game = makeOrderPlayerGame(num_of_players, num_of_bots)
+    order_player_game = makeOrderPlayerGame(num_of_players)
     print("The game contains " + str(num_of_players - num_of_bots) + " human players and " + str(num_of_bots) + " bots!")
     print("The order game playing: ")
     [print(e) for e in order_player_game]
     return board_size, order_player_game
 
-def main():
 
+def main():
     board_size, order_player_game = enterParametersGame()
 
-    game = Game.Game(board_size=board_size,order_player_game=order_player_game)
+    game = Game.Game(board_size=board_size, order_player_game=order_player_game)
     GUI(game).start()
 
-    game.initializeGame()  
+    game.initializeGame()
     while (not game.endGame()):
         for (player, player_type) in order_player_game:
 
-            #game.players[player].play_phase1()
+            # game.players[player].play_phase1()
             game.rollDice(player_num=player)
-            #game.players[player].play_phase2()
-            #game.players[player].play_phase3()
+            # game.players[player].play_phase2()
+            # game.players[player].play_phase3()
 
             # game.useSpecialCard(player) # TODO: complete this function
             # dice = game.rollDice()
@@ -81,4 +83,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
