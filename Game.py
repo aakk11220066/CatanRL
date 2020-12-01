@@ -92,7 +92,7 @@ class Game:
                 if tile['number'] == dice:
                     if tile['thief'] == True:
                         continue
-                    for point_coordinates in Board.get_point_coordinates_around_tile(tile['position'], actual_board_size=self.board.size+1): # TODO complete 'row' and 'size'
+                    for point_coordinates in Board.get_point_coordinates_around_tile(tile['position'], actual_board_size=self.board.boardSize+1):
                         num_player = points[('point',point_coordinates)]['owner']
                         if num_player>0:
                             resource = tile['tile_type']

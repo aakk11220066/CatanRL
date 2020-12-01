@@ -11,22 +11,22 @@ import random
 Coordinate = Tuple[int, int]
 rowWidths: List  # defined by _hexagonalBoard
 
-
 random.seed(RANDOM_SEED)
-
 
 '''
 :param actual_board_size: the size the user inputted + 1 (the "actual" size includes the layer of ocean)
 returns the coordinates of all 6 points around the given tile (all 6 corners of the hexagon)
 '''
+
+
 def get_point_coordinates_around_tile(tile_position: Coordinate, actual_board_size: int):
     half_of_board = get_board_half(tile_position[0], actual_board_size)
-    for local_row, local_col in [(0,0), (0,1), (0,2), (1,2), (1,1), (1,0), (0,0)]:
+    for local_row, local_col in [(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)]:
         result = [tile_position[0] + local_row, 2 * tile_position[1] + local_col]
 
         # Hexagonal board causes offset between column indices of top points of tile and bottom point
         # due to different starting indices.  Exception is the middle row of the board.
-        if (local_row==1 and half_of_board=="upper") or (local_row==0 and half_of_board=="lower"):
+        if (local_row == 1 and half_of_board == "upper") or (local_row == 0 and half_of_board == "lower"):
             result[1] += 1
 
         yield tuple(result)
@@ -34,10 +34,10 @@ def get_point_coordinates_around_tile(tile_position: Coordinate, actual_board_si
 
 # returns a standard hexagonal board to play on
 def get_board_half(row: int, actual_board_size: int) -> str:
-    assert(row >= 0 and actual_board_size > 0)
-    if row < actual_board_size-1:
+    assert (row >= 0 and actual_board_size > 0)
+    if row < actual_board_size - 1:
         return "upper"
-    if row == actual_board_size-1:
+    if row == actual_board_size - 1:
         return "middle"
     return "lower"
 
@@ -141,6 +141,8 @@ Graph is undirected, of course.  Every tile is connected to all 6 points around 
     it.  Points, tiles, and edges on the ocean are still considered regular points, 
     tiles, and edges. 
 '''
+
+
 class Board:
     def __init__(self, boardSize=3, thief_location=(1, 1)):  # locate thief at random location?
         self.graph = _hexagonalBoard(boardSize)
@@ -154,42 +156,46 @@ class Board:
         self.thief_location = thief_location
 
     def get_longest_road_length(self, player: int) -> int:
-        players_edges = list((u,v) for u,v,edge in self.graph.edges(data=True)
+        players_edges = list((u, v) for u, v, edge in self.graph.edges(data=True)
                              if "owner" in edge and edge["owner"] == player)
         player_subgraph = nx.Graph(players_edges)
         longest_road_length = 0
 
         # NOTE: this loop a exponential time, presents a serious bottleneck
         for point in player_subgraph.nodes:
-            longest_road_length = max(longest_road_length, _get_road_length(player_subgraph, road_start=point, player=player))
+            longest_road_length = max(longest_road_length,
+                                      _get_road_length(player_subgraph, road_start=point, player=player))
 
         return longest_road_length
 
-    def get_valid_settlement_locations(self, player: int, start_of_game: bool = False) -> Iterable[Tuple[str,Coordinate]]:
+    def get_valid_settlement_locations(self, player: int, start_of_game: bool = False) -> Iterable[
+        Tuple[str, Coordinate]]:
         return filter(
-            lambda node_label: is_valid_settlement_position(self.graph, node_label[1], player, start_of_game) and node_label[0]=="point",
+            lambda node_label: is_valid_settlement_position(self.graph, node_label[1], player, start_of_game) and
+                               node_label[0] == "point",
             self.graph.nodes
         )
 
-    def get_valid_road_locations(self, player) -> Iterable[Tuple[Tuple[str,Coordinate], Tuple[str,Coordinate]]]:
+    def get_valid_road_locations(self, player) -> Iterable[Tuple[Tuple[str, Coordinate], Tuple[str, Coordinate]]]:
         return filter(
-            lambda edge_label: is_valid_road_position(self.graph, edge_label[0][1], edge_label[1][1], player) and edge_label[0][0]=="point" and edge_label[1][0]=="point",
+            lambda edge_label: is_valid_road_position(self.graph, edge_label[0][1], edge_label[1][1], player) and
+                               edge_label[0][0] == "point" and edge_label[1][0] == "point",
             self.graph.edges
         )
 
     def get_surrounding_tiles(self, settlement_location: Coordinate):
         return filter(
-            lambda node_label: node_label[0]=="tile",
+            lambda node_label: node_label[0] == "tile",
             self.graph.neighbors(("point", settlement_location))
         )
 
 
-def _get_road_length(player_subgraph: nx.Graph, road_start: Coordinate, player) -> int: # DFS
+def _get_road_length(player_subgraph: nx.Graph, road_start: Coordinate, player) -> int:  # DFS
     longest_branch = 0
     for start, end in \
-        ((start, end) for start, end, attributes in player_subgraph.edges(road_start, data=True)
-         if "visited" not in attributes):
+            ((start, end) for start, end, attributes in player_subgraph.edges(road_start, data=True)
+             if "visited" not in attributes):
         player_subgraph.edges[start, end]["visited"] = None
-        longest_branch = max(longest_branch, 1+_get_road_length(player_subgraph, road_start=end, player=player))
+        longest_branch = max(longest_branch, 1 + _get_road_length(player_subgraph, road_start=end, player=player))
         del player_subgraph.edges[start, end]["visited"]
     return longest_branch
