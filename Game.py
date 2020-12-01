@@ -21,10 +21,10 @@ class Game:
         Used to allow humans watching the GUI to watch the game unfold turn by turn
     """
 
-    def __init__(self, board_size: int = 3, order_player_game: list = [(1, "BOT"),(2, "BOT")], threshold_victory_points=10, function_delay=0):
+    def __init__(self, board_size: int = 3, order_player_game: list = [1,2], threshold_victory_points=10, function_delay=0):
         self.board = Board.Board(boardSize=board_size)
         # Note: player number i should go in cell number i-1 (e.g. player 1 goes in cell 0)
-        self.players = [RandomPlayer(player[0]) for player in order_player_game] # TODO: add non random players as well
+        self.players = [RandomPlayer(player_number=player) for player in order_player_game] # TODO: add non random players as well
         self.function_delay = function_delay
         self.threshold_victory_points = threshold_victory_points
 
@@ -80,6 +80,7 @@ class Game:
 
     def rollDice(self, player_num: Player_number):
         dice = random.randint(1, 6) + random.randint(1, 6)
+        print("Dice: ",dice)
         if dice==7:
             for player in self.players:
                 if player._get_number_of_resources()>7:
@@ -93,10 +94,12 @@ class Game:
                     if tile['thief'] == True:
                         continue
                     for point_coordinates in Board.get_point_coordinates_around_tile(tile['position'], actual_board_size=self.board.boardSize+1):
+                        print("point_coordinates:",point_coordinates)
                         num_player = points[('point',point_coordinates)]['owner']
                         if num_player>0:
-                            resource = tile['tile_type']
-                            self.players[num_player].resources[resource] +=1
+                            resource_type = tiletype_to_resourcetype(tile['tile_type'])
+                            self.players[num_player-1].resources[resource_type] +=1
+                            print("Player:",num_player," Resource:",resource_type)
 
     def initializeGame(self):
         for player in self.players:

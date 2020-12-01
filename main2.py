@@ -53,7 +53,7 @@ def main():
 
     game.initializeGame()  
     while (not game.endGame()):
-        for (player, player_type) in order_player_game:
+        for player in order_player_game:
 
             #game.players[player].play_phase1()
             game.rollDice(player_num=player)
