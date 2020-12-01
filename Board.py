@@ -25,24 +25,29 @@ def get_point_coordinates_around_tile(tile_position: Coordinate, actual_board_si
         result = [tile_position[0] + local_row, 2 * tile_position[1] + local_col]
 
         # Hexagonal board causes offset between column indices of top points of tile and bottom point
-        # due to different starting indices.  Exception is the middle row of the board.
+        # due to different starting indices.  Exception is the middle tile_row of the board.
         if (local_row == 1 and half_of_board == "upper") or (local_row == 0 and half_of_board == "lower"):
             result[1] += 1
 
         yield tuple(result)
 
 
-# returns a standard hexagonal board to play on
-def get_board_half(row: int, actual_board_size: int) -> str:
-    assert (row >= 0 and actual_board_size > 0)
-    if row < actual_board_size - 1:
+# indicates which vertical half of the board a given tile is on
+def get_board_half(tile_row: int, actual_board_size: int) -> str:
+    assert (tile_row >= 0 and actual_board_size > 0)
+    if tile_row < actual_board_size - 1:
         return "upper"
-    if row == actual_board_size - 1:
+    if tile_row == actual_board_size - 1:
         return "middle"
     return "lower"
 
 
 def _hexagonalBoard(_size: int) -> nx.Graph:
+    """
+    :param _size: the board size requested by the user
+        (note: actual board size will be _size+1 to allow room for oceans)
+    :return: an nx.Graph representing a hexagonal board
+    """
     assert (_size > 1)
     size = _size + 1  # account for ocean surrounding board
     result = nx.Graph()

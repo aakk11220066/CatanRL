@@ -11,7 +11,7 @@ def swapPositions(list, pos1, pos2):
 
 def makeOrderPlayerGame(num_of_players, num_of_bots):
     players = [x + 1 for x in list(range(num_of_players))]
-    len = num_of_players
+    '''len = num_of_players
     order_player_game = []
     for i in range(num_of_players):
         player = random.choice(players[:len])
@@ -21,7 +21,8 @@ def makeOrderPlayerGame(num_of_players, num_of_bots):
             order_player_game.append((player, "BOT"))
         swapPositions(players, player - 1, len - 1)
         len -= 1
-    return order_player_game
+    return order_player_game'''
+    return players
 
 def enterParametersGame():
     # Defined board size (scale)
