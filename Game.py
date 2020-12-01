@@ -34,7 +34,7 @@ class Game:
                              self.board.get_surrounding_tiles(settlement_location)):
             resource_type = tiletype_to_resourcetype(tile_type)
             if resource_type:
-                self.players[player_num].resources[resource_type] += 1
+                self.players[player_num - 1].resources[resource_type] += 1
 
     def addSettlement(self, position: Coordinate, player_num: Player_number, start_of_game: bool = False):
         if not Building.is_valid_settlement_position(self.board.graph, position, player_num, start_of_game):
