@@ -21,15 +21,17 @@ def get_point_coordinates_around_tile(tile_position: Coordinate, actual_board_si
     :returns the coordinates of all 6 points around the given tile (all 6 corners of the hexagon)
     """
     half_of_board = get_board_half(tile_position[0], actual_board_size)
-    for local_row, local_col in [(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0), (0, 0)]:
-        result = [tile_position[0] + local_row, 2 * tile_position[1] + local_col]
+    result = []
+    for local_row, local_col in [(0, 0), (0, 1), (0, 2), (1, 2), (1, 1), (1, 0)]:
+        next_point_coord = [tile_position[0] + local_row, 2 * tile_position[1] + local_col]
 
         # Hexagonal board causes offset between column indices of top points of tile and bottom point
         # due to different starting indices.  Exception is the middle tile_row of the board.
         if (local_row == 1 and half_of_board == "upper") or (local_row == 0 and half_of_board == "lower"):
-            result[1] += 1
+            next_point_coord[1] += 1
 
-        yield tuple(result)
+        result.append(tuple(next_point_coord))
+    return result
 
 
 # indicates which vertical half of the board a given tile is on
@@ -90,7 +92,9 @@ def _hexagonalBoard(_size: int) -> nx.Graph:
             )
 
             prev_point_coordinates = None
-            for point_coordinates in get_point_coordinates_around_tile(tile_coordinates, size):
+            road_connection_points = get_point_coordinates_around_tile(tile_coordinates, size)
+            road_connection_points.append(road_connection_points[0])
+            for point_coordinates in road_connection_points:
                 # add surrounding points
                 result.add_node(
                     ("point", point_coordinates),
