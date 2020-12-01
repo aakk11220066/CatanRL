@@ -23,7 +23,7 @@ def makeOrderPlayerGame(num_of_players):
         swapPositions(players, player - 1, len - 1)
         len -= 1
     return order_player_game'''
-    return list(zip(players, ["BOT"] * num_of_players))
+    return zip(players, ["BOT"] * num_of_players)
 
 
 def enterParametersGame():
