@@ -54,6 +54,7 @@ class Player(ABC):
         raise NotImplementedError()
 
     # purposely unimplemented, merely a placeholder function for future development
+    @abstractmethod
     def play_development_cards(self):  # ABSTRACT
         raise NotImplementedError()
 

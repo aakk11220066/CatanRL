@@ -41,3 +41,8 @@ class RandomPlayer(Player):
     
     def purchase_buildings_and_cards(self):
         pass
+
+    def play_development_cards(self):
+        print('Player',self.player_number,'play_development_cards or do_nothing')
+        # development_card_action = ['DO_NOTHING'].expend(self.development_cards)
+        # print(random.choice(development_card_action))

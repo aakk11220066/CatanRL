@@ -23,7 +23,7 @@ def makeOrderPlayerGame(num_of_players):
         swapPositions(players, player - 1, len - 1)
         len -= 1
     return order_player_game'''
-    return zip(players, ["BOT"] * num_of_players)
+    return players
 
 
 def enterParametersGame():
@@ -57,7 +57,7 @@ def main():
     while (not game.endGame()):
         for player in order_player_game:
 
-            # game.players[player].play_phase1()
+            game.players[player-1].play_development_cards()
             game.rollDice(player_num=player)
             # game.players[player].play_phase2()
             # game.players[player].play_phase3()
