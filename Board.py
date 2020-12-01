@@ -15,7 +15,10 @@ rowWidths: List  # defined by _hexagonalBoard
 random.seed(RANDOM_SEED)
 
 
-# returns the coordinates of all 6 points around the given tile (all 6 corners of the hexagon)
+'''
+:param actual_board_size: the size the user inputted + 1 (the "actual" size includes the layer of ocean)
+returns the coordinates of all 6 points around the given tile (all 6 corners of the hexagon)
+'''
 def get_point_coordinates_around_tile(tile_position: Coordinate, actual_board_size: int):
     half_of_board = get_board_half(tile_position[0], actual_board_size)
     for local_row, local_col in [(0,0), (0,1), (0,2), (1,2), (1,1), (1,0), (0,0)]:
