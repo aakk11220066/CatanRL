@@ -16,8 +16,8 @@ random.seed(RANDOM_SEED)
 
 
 # returns the coordinates of all 6 points around the given tile (all 6 corners of the hexagon)
-def get_point_coordinates_around_tile(tile_position: Coordinate, half_of_board: str):
-    assert (half_of_board in ["upper", "middle", "lower"])
+def get_point_coordinates_around_tile(tile_position: Coordinate, actual_board_size: int):
+    half_of_board = get_board_half(tile_position[0], actual_board_size)
     for local_row, local_col in [(0,0), (0,1), (0,2), (1,2), (1,1), (1,0), (0,0)]:
         result = [tile_position[0] + local_row, 2 * tile_position[1] + local_col]
 
