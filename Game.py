@@ -21,10 +21,10 @@ class Game:
         Used to allow humans watching the GUI to watch the game unfold turn by turn
     """
 
-    def __init__(self, board_size: int = 3, num_players: int = 3, function_delay=0):
+    def __init__(self, board_size: int = 3, order_player_game: list = [(1, "BOT"),(2, "BOT")], function_delay=0):
         self.board = Board.Board(boardSize=board_size)
         # Note: player number i should go in cell number i-1 (e.g. player 1 goes in cell 0)
-        self.players = [RandomPlayer() for _ in range(num_players)] # TODO: add non random players as well
+        self.players = [RandomPlayer(player[0]) for player in order_player_game] # TODO: add non random players as well
         self.function_delay = function_delay
 
     def _collect_surrounding_resources(self, settlement_location: Coordinate):
@@ -97,5 +97,12 @@ class Game:
                         if num_player>0:
                             resource = tile['tile_type']
                             self.players[num_player].resources[resource] +=1
+
+    def initializeGame(self):
+        for player in self.players:
+            player.buildSettlementAndRoadRound1(self) 
+        print(type(self.players))          
+        for player in reversed(self.players):
+            player.buildSettlementAndRoadRound2(self)
             
 
