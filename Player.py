@@ -5,7 +5,8 @@ from abc import ABC, abstractmethod
 
 
 class Player(ABC):
-    def __init__(self):
+    def __init__(self, player_number: int):
+        self.player_number = player_number
         # resources to build first 2 settlements and 2 roads at beginning of game
         self.resources = {"sheep": 2, "wheat": 2, "wood": 4, "brick": 4, "ore": 0}
         self.victory_points = 0
@@ -25,23 +26,23 @@ class Player(ABC):
         self.resources["ore"] -= ore
 
     @abstractmethod
-    def move_thief(self,
-                   board: Board):  # TODO: AKIVA: delete this method.  Should be implemented in subclasses, not here
-        tiles = dict((k, v) for k, v in board.graph.nodes.items() if k[0] == "tile")
-        for tile in tiles.values():
-            if tile['thief'] == True:
-                pos = tile['position']
-        del tiles[('tile', pos)]
-        board._add_thief(random.choice(list(tiles.values()))['position'])
+    def move_thief(self, board: Board):
+        raise NotImplementedError()
 
     def _get_number_of_resources(self):
         return sum(list(self.resources.values()))
-
+        
+    @abstractmethod    
     def dropHalfCards(self):
-        num_removed = self._get_number_of_resources() // 2
-        for i in range(num_removed):
-            d = dict((k, v) for k, v in self.resources.items() if v > 0)
-            self.resources[random.choice(list(d))] -= 1
+        raise NotImplementedError()
+
+    @abstractmethod
+    def buildSettlementAndRoadRound1(self, board: Board):
+        raise NotImplementedError()
+
+    @abstractmethod
+    def buildSettlementAndRoadRound2(self, board: Board):
+        raise NotImplementedError()    
 
     # purchasing development cards is currently disabled (not implemented)
     @abstractmethod
@@ -55,3 +56,5 @@ class Player(ABC):
     # purposely unimplemented, merely a placeholder function for future development
     def play_development_cards(self):  # ABSTRACT
         raise NotImplementedError()
+
+
