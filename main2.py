@@ -54,10 +54,10 @@ def main():
     while (not game.endGame()):
         for (player, player_type) in order_player_game:
 
-            game.players[player].play_phase1()
+            #game.players[player].play_phase1()
             game.rollDice(player_num=player)
-            game.players[player].play_phase2()
-            game.players[player].play_phase3()
+            #game.players[player].play_phase2()
+            #game.players[player].play_phase3()
 
             # game.useSpecialCard(player) # TODO: complete this function
             # dice = game.rollDice()

@@ -34,7 +34,7 @@ class RandomPlayer(Player):
         valid_settlement_locations = game.board.get_valid_settlement_locations(player=self.player_number, start_of_game=True)    
         settlement_location = random.choice(list(valid_settlement_locations))
         game.addSettlement(position=settlement_location[1], player_num=self.player_number, start_of_game=True)
-        # Add resources around current new settlement's player 
+        game._collect_surrounding_resources(settlement_location=settlement_location[1]) 
         valid_road_locations = game.board.get_valid_road_locations(player=self.player_number)    
         road_location = random.choice(list(valid_road_locations))
         game.addRoad(point1=road_location[0][1], point2=road_location[1][1], player_num=self.player_number) 
