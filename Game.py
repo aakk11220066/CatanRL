@@ -85,7 +85,7 @@ class Game:
             for player in self.players:
                 if player._get_number_of_resources()>7:
                     player.dropHalfCards()
-            self.players[player_num].move_thief(self.board)
+            self.players[player_num-1].move_thief(self.board)
         else:
             tiles = dict((k, v) for k, v in self.board.graph.nodes.items() if k[0] == "tile" and v['tile_type']!=TileType.OCEAN)
             points = dict((k, v) for k, v in self.board.graph.nodes.items() if k[0] == "point")
@@ -94,12 +94,12 @@ class Game:
                     if tile['thief'] == True:
                         continue
                     for point_coordinates in Board.get_point_coordinates_around_tile(tile['position'], actual_board_size=self.board.boardSize+1):
-                        print("point_coordinates:",point_coordinates)
+                        #print("point_coordinates:",point_coordinates)
                         num_player = points[('point',point_coordinates)]['owner']
                         if num_player>0:
                             resource_type = tiletype_to_resourcetype(tile['tile_type'])
                             self.players[num_player-1].resources[resource_type] +=1
-                            print("Player:",num_player," Resource:",resource_type)
+                            print("Player:",num_player,"-> Resource:",resource_type)
 
     def initializeGame(self):
         for player in self.players:

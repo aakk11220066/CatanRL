@@ -14,7 +14,9 @@ class RandomPlayer(Player):
             if tile['thief'] == True:
                 pos = tile['position']
         del tiles[('tile',pos)]
-        random.choice(list(tiles.values()))['thief'] = True
+        thief_new_position = random.choice(list(tiles.values()))['position']
+        board._add_thief(thief_new_position) #TODO the thief duplicate to another location and take random resource from random player
+        print("The thief moved to",thief_new_position)
 
     def dropHalfCards(self):
         num_removed = self._get_number_of_resources() // 2
