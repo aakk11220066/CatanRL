@@ -1,6 +1,7 @@
 import Exceptions
 import random
 import Board
+import Game
 from abc import ABC, abstractmethod
 
 
@@ -24,6 +25,43 @@ class Player(ABC):
         self.resources["wood"] -= wood
         self.resources["brick"] -= brick
         self.resources["ore"] -= ore
+    
+    def valid_buy_road(self, game: Game):
+        valid_road_locations = game.board.get_valid_road_locations(player=self.player_number)
+        if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
+            bool(valid_road_locations):
+            return True
+        return False
+    
+    def valid_buy_settlement(self, game: Game):
+        valid_settlement_locations = game.board.get_valid_settlement_locations(player=self.player_number)
+        if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
+            self.resources["sheep"]>=1 and self.resources["wheat"]>=1 and \
+                bool(valid_settlement_locations):
+            return True
+        return False
+
+    def valid_buy_city(self):
+        if self.resources["wheat"]>=2 and self.resources["ore"]>=3:
+            return True
+        return False
+
+    def valid_buy_development_card(self):
+        if self.resources["sheep"]>=1 and self.resources["wheat"]>=1 and self.resources["ore"]>=1:
+            return True
+        return False
+
+    def valid_buy_actions(self, game: Game):
+        actions = []
+        if self.valid_buy_road(game=game):
+            actions.append('road')
+        if self.valid_buy_settlement(game=game):
+            actions.append('settlement')
+        if self.valid_buy_city():
+            actions.append('city')
+        if self.valid_buy_development_card():
+            actions.append('development_card')
+        return actions
 
     @abstractmethod
     def move_thief(self, board: Board):
@@ -56,6 +94,15 @@ class Player(ABC):
     # purposely unimplemented, merely a placeholder function for future development
     @abstractmethod
     def play_development_cards(self):  # ABSTRACT
+        raise NotImplementedError()
+
+    # purposely unimplemented, merely a placeholder function for future development
+    @abstractmethod
+    def trade_cards(self):  # ABSTRACT
+        raise NotImplementedError()
+
+    @abstractmethod
+    def buy_road_or_settlement_or_city_or_development_card(self): 
         raise NotImplementedError()
 
 

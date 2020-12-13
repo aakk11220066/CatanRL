@@ -9,7 +9,6 @@ def swapPositions(list, pos1, pos2):
     list[pos1], list[pos2] = list[pos2], list[pos1]
     return list
 
-
 def makeOrderPlayerGame(num_of_players):
     players = [x + 1 for x in list(range(num_of_players))]
     '''len = num_of_players
@@ -24,7 +23,6 @@ def makeOrderPlayerGame(num_of_players):
         len -= 1
     return order_player_game'''
     return players
-
 
 def enterParametersGame():
     # Defined board size (scale)
@@ -52,30 +50,18 @@ def main():
 
     game = Game.Game(board_size=board_size, order_player_game=order_player_game)
     GUI(game).start()
-
+    print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     game.initializeGame()
     while (not game.endGame()):
+
         for player in order_player_game:
-
-            game.players[player-1].play_development_cards()
+            print('@@@@@@@@@@@@@@@@@@@@ Player',player,'play @@@@@@@@@@@@@@@@@@@@')
+            print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+            game.players[player-1].play_development_cards() # Future implemention
             game.rollDice(player_num=player)
-            # game.players[player].play_phase2()
-            # game.players[player].play_phase3()
-
-            # game.useSpecialCard(player) # TODO: complete this function
-            # dice = game.rollDice()
-            # if dice == 7:
-            #     game.dropHalfCards() # TODO: complete this function 
-            #     game.moveRobber(player[0], (i,j))  # TODO: complete this function
-            # else:
-            #     game.addSourcesToPlayers(dice) # TODO: complete this function
-
-            # if player[1]=='bot':
-            #     game.makeRandomAction(player[0]) # TODO: complete this function
-            # else:
-            #     game.makeAction(player[0]) # TODO: complete this function
-
-            # game.useSpecialCard(player) # TODO: complete this function
+            game.players[player-1].trade_cards() # Future implemention
+            game.players[player-1].buy_road_or_settlement_or_city_or_development_card(game=game) # The function calls the game TODO
+            print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
             if game.endGame():
                 break
