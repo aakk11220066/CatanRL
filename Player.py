@@ -29,7 +29,7 @@ class Player(ABC):
     def valid_buy_road(self, game: Game):
         valid_road_locations = game.board.get_valid_road_locations(player=self.player_number)
         if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
-            bool(valid_road_locations):
+            bool(list(valid_road_locations)):
             return True
         return False
     
@@ -37,12 +37,14 @@ class Player(ABC):
         valid_settlement_locations = game.board.get_valid_settlement_locations(player=self.player_number)
         if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
             self.resources["sheep"]>=1 and self.resources["wheat"]>=1 and \
-                bool(valid_settlement_locations):
+                bool(list(valid_settlement_locations)):
             return True
         return False
 
-    def valid_buy_city(self):
-        if self.resources["wheat"]>=2 and self.resources["ore"]>=3:
+    def valid_buy_city(self, game: Game):
+        valid_city_locations = game.board.get_valid_city_locations(player=self.player_number)
+        if self.resources["wheat"]>=2 and self.resources["ore"]>=3 and \
+            bool(list(valid_city_locations)):
             return True
         return False
 
@@ -57,7 +59,7 @@ class Player(ABC):
             actions.append('road')
         if self.valid_buy_settlement(game=game):
             actions.append('settlement')
-        if self.valid_buy_city():
+        if self.valid_buy_city(game=game):
             actions.append('city')
         if self.valid_buy_development_card():
             actions.append('development_card')

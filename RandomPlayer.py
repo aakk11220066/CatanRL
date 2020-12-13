@@ -39,10 +39,9 @@ class RandomPlayer(Player):
         return settlement_location
 
     def buildCityRandomly(self,game: Game):
-        print('Complete buildCityRandomly')
-        # valid_settlement_locations = game.board.get_valid_settlement_locations(player=self.player_number, start_of_game=start_of_game)    
-        # settlement_location = random.choice(list(valid_settlement_locations))
-        # game.addSettlement(position=settlement_location[1], player_num=self.player_number, start_of_game=start_of_game)        
+        valid_city_locations = game.board.get_valid_city_locations(player=self.player_number)
+        city_location = random.choice(list(valid_city_locations))
+        game.addCity(position=city_location[1], player_num=self.player_number)        
 
     def buyDevelopmentCardRandomly(self,game: Game):
         print('Complete buyDevelopmentCardRandomly')

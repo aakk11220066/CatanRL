@@ -65,7 +65,12 @@ def main():
 
             if game.endGame():
                 break
-
+        for player in order_player_game:
+            game.players[player - 1].resources["sheep"] += 10
+            game.players[player - 1].resources["wheat"] += 10
+            game.players[player - 1].resources["wood"] += 10
+            game.players[player - 1].resources["brick"] += 10
+            game.players[player - 1].resources["ore"] += 10
 
 if __name__ == "__main__":
     main()
