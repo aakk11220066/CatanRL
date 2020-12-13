@@ -250,11 +250,12 @@ def makeGraphical(getPlayerColor):
         screen.blit(board, (int(BOARD_PIXEL_DIMENSIONS * 0.1), int(BOARD_PIXEL_DIMENSIONS * 0.1)))
 
         thief_xAlign = xAlign(Board.rowWidths[game.board.thief_location[0]])
-        drawThief(board,
-                  (thief_xAlign + (HEX_WIDTH * (game.board.thief_location[1] + 0.5)) - (THIEF_WIDTH * 0.5),
-                   yAlign(len(Board.rowWidths)) + (HEX_HEIGHT * (3 * game.board.thief_location[0] / 4 + 0.5)) - (
-                           THIEF_HEIGHT * 0.5))
-                  )
+        thief_graphical_position = (
+            thief_xAlign + (HEX_WIDTH * (game.board.thief_location[1] + 0.5)) - (THIEF_WIDTH * 0.5),
+            yAlign(len(Board.rowWidths)) + (HEX_HEIGHT * (3 * game.board.thief_location[0] / 4 + 0.5)) -
+                (THIEF_HEIGHT * 0.5)
+        )
+        drawThief(board, thief_graphical_position)
 
         drawRoads(board, getPlayerColor)
         drawSettlements(board, getPlayerColor)
