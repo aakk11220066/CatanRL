@@ -54,7 +54,12 @@ class RandomPlayer(Player):
     def buildSettlementAndRoadRound2(self, game: Game):
         settlement_location = self.buildSettlementRandomly(game=game,start_of_game=True)
         game._collect_surrounding_resources(settlement_location=settlement_location[1]) 
-        valid_road_locations = game.board.get_valid_road_locations(player=self.player_number) # TODO 
+        valid_road_locations = game.board.get_valid_road_locations(player=self.player_number) # TODO
+        valid_road_locations = filter(
+            lambda road_endpoints: road_endpoints[0]==settlement_location or
+                                   road_endpoints[1]==settlement_location,
+            valid_road_locations
+        )
         road_location = random.choice(list(valid_road_locations))
         game.addRoad(point1=road_location[0][1], point2=road_location[1][1], player_num=self.player_number) 
     

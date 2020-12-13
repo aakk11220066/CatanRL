@@ -48,7 +48,7 @@ def enterParametersGame():
 def main():
     board_size, order_player_game = enterParametersGame()
 
-    game = Game.Game(board_size=board_size, order_player_game=order_player_game, function_delay=0.1)
+    game = Game.Game(board_size=board_size, order_player_game=order_player_game, function_delay=1)
     GUI(game).start()
     print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
     game.initializeGame()
