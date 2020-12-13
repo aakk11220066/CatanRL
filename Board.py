@@ -190,11 +190,10 @@ class Board:
         )
 
     def get_valid_city_locations(self, player: int) -> Iterable[Tuple[str, Coordinate]]:
-        return filter(
-            lambda node_data: node_data[0][0] == "point" and
-                              node_data[1]["owner"] == player and
-                              node_data[1]["building"] is BuildingTypes.Settlement,
-            self.graph.nodes(data=True)
+        return (node_data[0] for node_data in self.graph.nodes(data=True) if
+                node_data[0][0] == "point" and
+                node_data[1]["owner"] == player and
+                node_data[1]["building"] is BuildingTypes.Settlement
         )
 
     def get_valid_road_locations(self, player) -> Iterable[Tuple[Tuple[str, Coordinate], Tuple[str, Coordinate]]]:
