@@ -164,6 +164,10 @@ class Board:
         self.graph.nodes[("tile", thief_location)]['thief'] = True
         self.thief_location = thief_location
 
+    def move_thief(self, thief_new_location: Coordinate):
+        self.graph.nodes[("tile", self.thief_location)]["thief"] = False
+        self._add_thief(thief_new_location)
+
     def get_longest_road_length(self, player: int) -> int:
         players_edges = list((u, v) for u, v, edge in self.graph.edges(data=True)
                              if "owner" in edge and edge["owner"] == player)
