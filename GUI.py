@@ -232,7 +232,7 @@ def drawCities(board, getPlayerColor):
                             )
 
 
-def makeGraphical(getPlayerColor):
+def makeGraphical(getPlayerColor, render_request_status : bool):
     global BOARD_PIXEL_DIMENSIONS
     BOARD_PIXEL_DIMENSIONS += HEX_HEIGHT*1.5*game.board.boardSize
 
@@ -243,7 +243,7 @@ def makeGraphical(getPlayerColor):
     done = False
     clock = pygame.time.Clock()
 
-    while not done:
+    while not done and render_request_status():
         # Clear the screen
         screen.fill(BLACK)
         board = empty_board.copy()
@@ -278,11 +278,15 @@ def default_player_colors(player: int):
 
 
 class GUI(pygame.threads.Thread):
-    def __init__(self, _game: Game, getPlayerColor=default_player_colors):
+    def __init__(self, _game: Game, getPlayerColor=default_player_colors, render_request_status = None):
         super().__init__()
         global game
         game = _game
         self.getPlayerColor = getPlayerColor
+        self.render_request_status = render_request_status
+        if self.render_request_status is None:
+            self.render_request_status = lambda: True
+
 
     def run(self):
-        makeGraphical(self.getPlayerColor)
+        makeGraphical(self.getPlayerColor, self.render_request_status)
