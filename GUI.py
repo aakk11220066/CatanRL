@@ -27,6 +27,7 @@ WHITE = (255, 255, 255)
 DARK_BLUE = (48, 48, 148)
 RED = (255, 0, 0)
 DARK_GRAY = (100, 100, 100)
+TRANSPARENT = (0, 0, 0, 0)
 tileColors = {
     TileType.FOREST: (0, 200, 0),
     TileType.HILLS: (220, 170, 0),
@@ -125,7 +126,7 @@ def setupBoard():
     return board
 
 
-def drawThief(board, topLeftCorner: Coordinate):
+def drawThief(board : pygame.Surface, topLeftCorner: Coordinate):
     pygame.draw.circle(board, BLACK,  # head
                        (int(topLeftCorner[0] + THIEF_WIDTH // 2), int(topLeftCorner[1] + THIEF_WIDTH // 2)),
                        THIEF_HEIGHT // 8)
@@ -237,7 +238,7 @@ def makeGraphical(getPlayerColor):
 
     pygame.init()
     screen = pygame.display.set_mode((int(1.2 * BOARD_PIXEL_DIMENSIONS), int(1.2 * BOARD_PIXEL_DIMENSIONS)))
-    board = setupBoard()
+    empty_board = setupBoard()
 
     done = False
     clock = pygame.time.Clock()
@@ -245,9 +246,7 @@ def makeGraphical(getPlayerColor):
     while not done:
         # Clear the screen
         screen.fill(BLACK)
-
-        # Draw board
-        screen.blit(board, (int(BOARD_PIXEL_DIMENSIONS * 0.1), int(BOARD_PIXEL_DIMENSIONS * 0.1)))
+        board = empty_board.copy()
 
         thief_xAlign = xAlign(Board.rowWidths[game.board.thief_location[0]])
         thief_graphical_position = (
@@ -256,10 +255,13 @@ def makeGraphical(getPlayerColor):
                 (THIEF_HEIGHT * 0.5)
         )
         drawThief(board, thief_graphical_position)
-
+        
         drawRoads(board, getPlayerColor)
         drawSettlements(board, getPlayerColor)
         drawCities(board, getPlayerColor)
+
+        # Draw board
+        screen.blit(board, (int(BOARD_PIXEL_DIMENSIONS * 0.1), int(BOARD_PIXEL_DIMENSIONS * 0.1)))
 
         # Handle events
         for event in pygame.event.get():
