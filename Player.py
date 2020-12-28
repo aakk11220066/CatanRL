@@ -77,16 +77,11 @@ class Player(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def buildSettlementAndRoadRound1(self, board: Board):
+    def buildSettlementAndRoadRound1(self, game: Game):
         raise NotImplementedError()
 
     @abstractmethod
-    def buildSettlementAndRoadRound2(self, board: Board):
-        raise NotImplementedError()    
-
-    # purchasing development cards is currently disabled (not implemented)
-    @abstractmethod
-    def purchase_buildings_and_cards(self):
+    def buildSettlementAndRoadRound2(self, game: Game):
         raise NotImplementedError()
 
     # purposely unimplemented, merely a placeholder function for future development
@@ -104,7 +99,5 @@ class Player(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def buy_road_or_settlement_or_city_or_development_card(self): 
+    def buy_road_or_settlement_or_city_or_development_card(self,game: Game):
         raise NotImplementedError()
-
-

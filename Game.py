@@ -101,12 +101,6 @@ class Game:
                             self.players[num_player-1].resources[resource_type] +=1
                             print("Player:",num_player,"-> Resource:",resource_type)
 
-    def initializeGame(self):
-        for player in self.players:
-            player.buildSettlementAndRoadRound1(self)
-        for player in reversed(self.players):
-            player.buildSettlementAndRoadRound2(self)
-
     def endGame(self):
         for player in self.players:
             if player.victory_points >= self.threshold_victory_points:
@@ -114,4 +108,42 @@ class Game:
                 return True
         return False
 
+# --------------------HELPER FUNCTIONS FOR PREPPING GAME------------------
+def _swapPositions(list, pos1, pos2):
+    list[pos1], list[pos2] = list[pos2], list[pos1]
+    return list
 
+def makeOrderPlayerGame(num_of_players):
+    players = [x + 1 for x in list(range(num_of_players))]
+    '''len = num_of_players
+    order_player_game = []
+    for i in range(num_of_players):
+        player = random.choice(players[:len])
+        if player <= num_of_players - num_of_bots:
+            order_player_game.append((player, "HUMAN"))
+        else:
+            order_player_game.append((player, "BOT"))
+        _swapPositions(players, player - 1, len - 1)
+        len -= 1
+    return order_player_game'''
+    return players
+
+def enterParametersGame():
+    # Defined board size (scale)
+    board_size = int(input("Please select the game board size (2,3,4...): "))
+    while board_size < 2:
+        board_size = int(input("Illegal board size. Try again.\nPlease select the game board size (2,3,4...): "))
+    # Defined players
+    num_of_players = int(input("How many players are playing (2,3,4...)? "))
+    while num_of_players < 2:
+        num_of_players = int(input("Illegal number of players. Try again.\nHow many players are playing (2,3,4...)? "))
+    num_of_bots = int(input("How many computer bots are playing? (from 0 to " + str(num_of_players) + "): "))
+    while not (num_of_players >= num_of_bots and num_of_bots >= 0):
+        num_of_bots = int(input(
+            "Illegal number of computer bots. Try again.\nHow many computer bots are playing? (from 0 to " + str(
+                num_of_players) + "): "))
+    order_player_game = makeOrderPlayerGame(num_of_players)
+    print("The game contains " + str(num_of_players - num_of_bots) + " human players and " + str(num_of_bots) + " bots!")
+    print("The order game playing: ")
+    [print(e) for e in order_player_game]
+    return board_size, order_player_game
