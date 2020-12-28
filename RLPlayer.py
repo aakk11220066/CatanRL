@@ -4,11 +4,12 @@ from Game import Game
 from abc import ABC, abstractmethod
 
 
-class RLPlayer(Player, ABC):
+class RLPlayer(Player):
     @abstractmethod
     def move_thief(self, board: Board):
         raise NotImplementedError()
 
+    # TODO: standardize var names to snake_case
     @abstractmethod
     def dropHalfCards(self):
         raise NotImplementedError() # TODO

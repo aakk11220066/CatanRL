@@ -93,7 +93,7 @@ class GymInterface(gym.Env):
 
     # -------------------- Gym methods -----------------
 
-    def step(self, action: dict):
+    def step(self, action: dict): # TODO: document actions
         if action['action_type'] == "first_building":
             self._build_first_buildings(
                 settlement_location=action['building_locations']["settlement"],
@@ -114,7 +114,7 @@ class GymInterface(gym.Env):
             yield (player % len(self.game.players)) + 1
 
     def _get_observation(self):
-        return self.game.board
+        return self.game.board # TODO: write separate class to translate board to PyGeometric
 
     def _get_info_for_player(self):
         observation = self._get_observation()
