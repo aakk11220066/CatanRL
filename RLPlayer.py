@@ -1,6 +1,6 @@
 from Player import Player
 from Board import Board
-from Game import Game
+from CatanGame import CatanGame
 from abc import ABC, abstractmethod
 
 
@@ -15,13 +15,13 @@ class RLPlayer(Player):
         raise NotImplementedError() # TODO
 
     @abstractmethod
-    def buildSettlementAndRoadRound1(self, game: Game):
+    def buildSettlementAndRoadRound1(self, game: CatanGame):
         raise NotImplementedError()
 
     @abstractmethod
-    def buildSettlementAndRoadRound2(self, game: Game):
+    def buildSettlementAndRoadRound2(self, game: CatanGame):
         raise NotImplementedError()
 
     @abstractmethod
-    def buy_road_or_settlement_or_city_or_development_card(self, game: Game):
+    def buy_road_or_settlement_or_city_or_development_card(self, game: CatanGame):
         raise NotImplementedError()

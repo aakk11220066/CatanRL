@@ -17,20 +17,20 @@ class GameSupervisor:
 
     def run_game(self, outside_player: PlayerController):
         start_building_round1_observation = self.gym.reset()
-        action = {
-            "action_type": "first_building",
-            "building_locations": outside_player.buildSettlementAndRoadRound1(start_building_round1_observation)
-        }
+
+        action = outside_player.buildSettlementAndRoadRound1(start_building_round1_observation)
         last_info = self.gym.step(action)
         outside_player.log_reward(last_info[1])
-        action["building_locations"] = outside_player.buildSettlementAndRoadRound2(last_info[0])
-        outside_player.log_reward(last_info[1])
+
+        action = outside_player.buildSettlementAndRoadRound2(last_info[0])
         while not last_info[2]:
             last_info = self.gym.step(action)
             outside_player.log_reward(last_info[1])
+
             action = outside_player.move_thief(last_info[0])
             last_info = self.gym.step(action)
             outside_player.log_reward(last_info[0])
+
             action = outside_player.buy_road_or_settlement_or_city_or_development_card(last_info[0])
 
 

@@ -1,7 +1,9 @@
 from Board import Board
 from PlayerController import PlayerController
 
+Action = dict
 
+# All functions of controller should return Actions
 class RLPlayerController(PlayerController):
     def move_thief(self, observation):
         raise NotImplementedError()

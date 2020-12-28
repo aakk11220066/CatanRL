@@ -4,7 +4,7 @@ from typing import Tuple
 import Board
 import Building
 from Tile import TileType
-from Game import Game
+from CatanGame import CatanGame
 
 # presets
 HEX_WIDTH = 80
@@ -38,7 +38,7 @@ tileColors = {
     TileType.OCEAN: (0, 125, 250)
 }
 
-game: Game  # redefined to Game type in makeGraphical function
+game: CatanGame  # redefined to CatanGame type in makeGraphical function
 Coordinate = Tuple[int, int]
 
 
@@ -278,7 +278,7 @@ def default_player_colors(player: int):
 
 
 class GUI(pygame.threads.Thread):
-    def __init__(self, _game: Game, getPlayerColor=default_player_colors, render_request_status = None):
+    def __init__(self, _game: CatanGame, getPlayerColor=default_player_colors, render_request_status = None):
         super().__init__()
         global game
         game = _game

@@ -14,7 +14,7 @@ Coordinate = Tuple[int, int]
 Player_number = int
 
 
-class Game: # TODO: rename to CatanGame
+class CatanGame:
     """
     :param board_size: number of tiles along each side of the hexagonal board
     :param function_delay: how long to wait after performing each public function.

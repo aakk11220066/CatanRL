@@ -1,7 +1,7 @@
 import Exceptions
 import random
 import Board
-import Game
+import CatanGame
 from abc import ABC, abstractmethod
 
 
@@ -26,14 +26,14 @@ class Player(ABC):
         self.resources["brick"] -= brick
         self.resources["ore"] -= ore
     
-    def valid_buy_road(self, game: Game):
+    def valid_buy_road(self, game: CatanGame):
         valid_road_locations = game.board.get_valid_road_locations(player=self.player_number)
         if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
             bool(list(valid_road_locations)):
             return True
         return False
     
-    def valid_buy_settlement(self, game: Game):
+    def valid_buy_settlement(self, game: CatanGame):
         valid_settlement_locations = game.board.get_valid_settlement_locations(player=self.player_number)
         if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
             self.resources["sheep"]>=1 and self.resources["wheat"]>=1 and \
@@ -41,7 +41,7 @@ class Player(ABC):
             return True
         return False
 
-    def valid_buy_city(self, game: Game):
+    def valid_buy_city(self, game: CatanGame):
         valid_city_locations = game.board.get_valid_city_locations(player=self.player_number)
         if self.resources["wheat"]>=2 and self.resources["ore"]>=3 and \
             bool(list(valid_city_locations)):
@@ -53,7 +53,7 @@ class Player(ABC):
             return True
         return False
 
-    def valid_buy_actions(self, game: Game):
+    def valid_buy_actions(self, game: CatanGame):
         actions = []
         if self.valid_buy_road(game=game):
             actions.append('road')
@@ -77,11 +77,11 @@ class Player(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def buildSettlementAndRoadRound1(self, game: Game):
+    def buildSettlementAndRoadRound1(self, game: CatanGame):
         raise NotImplementedError()
 
     @abstractmethod
-    def buildSettlementAndRoadRound2(self, game: Game):
+    def buildSettlementAndRoadRound2(self, game: CatanGame):
         raise NotImplementedError()
 
     # purposely unimplemented, merely a placeholder function for future development
@@ -99,5 +99,5 @@ class Player(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def buy_road_or_settlement_or_city_or_development_card(self,game: Game):
+    def buy_road_or_settlement_or_city_or_development_card(self, game: CatanGame):
         raise NotImplementedError()

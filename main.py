@@ -1,9 +1,9 @@
 from GUI import GUI
-import Game
+import CatanGame
 
 
 def main():
-    game = Game.Game(board_size=3, function_delay=0.5)
+    game = CatanGame.CatanGame(board_size=3, function_delay=0.5)
     gui = GUI(game)
     gui.start()
 

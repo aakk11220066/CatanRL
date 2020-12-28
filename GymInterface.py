@@ -3,10 +3,10 @@ from typing import Tuple, Dict, List
 
 sys.path.append("C:\ProgramData\Miniconda3\Lib\site-packages")  # FIXME: DELETE ME
 import gym
-from Game import Game
-from Game import Coordinate
+from CatanGame import CatanGame
+from CatanGame import Coordinate
 from Board import Board
-import Game as GameHelperFunctions
+import CatanGame as GameHelperFunctions
 from itertools import count
 from RLPlayer import RLPlayer
 
@@ -15,7 +15,7 @@ def _get_beginning_builder_method(
         settlement_location: Tuple[str, Coordinate],
         road_location: Tuple[Tuple[str, Coordinate], Tuple[str, Coordinate]],
         player_num: int):
-    def result(self, game: Game):
+    def result(self, game: CatanGame):
         game.addSettlement(position=settlement_location[1], player_num=player_num, start_of_game=True)
         game.addRoad(point1=road_location[0][1], point2=road_location[1][1], player_num=player_num)
 
@@ -30,7 +30,7 @@ def _get_thief_mover_method(new_thief_location: Tuple[str, Coordinate]):
 
 
 def get_purchase_maker_method(purchases: Dict[str, List], player_num: int):
-    def result(game: Game):
+    def result(game: CatanGame):
         for settlement in purchases["settlements"]:
             game.addSettlement(position=settlement[1], player_num=player_num)
         for city in purchases["cities"]:
@@ -53,7 +53,7 @@ class GymInterface(gym.Env):
         self.RL_player_num = RL_player_num
         board_size, order_player_game = GameHelperFunctions.enterParametersGame()
 
-        self.game = Game(board_size=board_size, order_player_game=order_player_game, function_delay=0.1)
+        self.game = CatanGame(board_size=board_size, order_player_game=order_player_game, function_delay=0.1)
         self.game.players[RL_player_num - 1] = RLPlayer()
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
@@ -85,6 +85,8 @@ class GymInterface(gym.Env):
     def _buy_buildings(self, purchases: Dict):
         self.game.players[self.RL_player_num - 1].buy_road_or_settlement_or_city_or_development_card = \
             get_purchase_maker_method(purchases, player_num=self.RL_player_num)
+        self.game.players[self.RL_player_num - 1].buy_road_or_settlement_or_city_or_development_card(game=self.game)
+
         # Run all players until RL agent
         for player in self._get_player_turns():
             if player == self.RL_player_num:
@@ -103,9 +105,11 @@ class GymInterface(gym.Env):
         elif action['action_type'] == "thief placement":
             self.game.players[self.RL_player_num - 1].move_thief = \
                 _get_thief_mover_method(action['desired_thief_location'])
+            self.game.rollDice(player_num=self.RL_player_num)
 
         elif action['action_type'] == "buildings purchase":
             self._buy_buildings(purchases=action['purchases'])
+
 
         return self._get_info_for_player()
 
@@ -133,7 +137,7 @@ class GymInterface(gym.Env):
         # TODO: reset turn counter
         board_size, order_player_game = GameHelperFunctions.enterParametersGame()
 
-        self.game = Game(board_size=board_size, order_player_game=order_player_game, function_delay=0.1)
+        self.game = CatanGame(board_size=board_size, order_player_game=order_player_game, function_delay=0.1)
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
         self._init_game()
@@ -142,7 +146,7 @@ class GymInterface(gym.Env):
     def render(self, mode="human"):
         pass
 
-    # -------------------- Game methods -----------------
+    # -------------------- CatanGame methods -----------------
 
     def _playTurn(self, player: int):
         assert (isinstance(player, int))
