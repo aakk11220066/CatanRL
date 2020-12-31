@@ -2,10 +2,8 @@ from enum import Enum
 from typing import Tuple
 from networkx import Graph
 
-from Shared_Constants import NO_PLAYER
-from Tile import TileType
-
-Coordinate = Tuple[int, int]
+from Shared_Constants import NO_PLAYER, Coordinate
+from CatanGame.Tile import TileType
 
 
 class BuildingTypes(Enum):

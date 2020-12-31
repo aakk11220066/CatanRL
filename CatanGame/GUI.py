@@ -1,10 +1,10 @@
 import pygame
-from typing import Tuple
 
-import Board
-import Building
-from Tile import TileType
-from CatanGame import CatanGame
+import CatanGame.Board as Board
+import CatanGame.Building as Building
+from CatanGame.Tile import TileType
+from CatanGame.CatanGame import CatanGame
+from Shared_Constants import Coordinate
 
 # presets
 HEX_WIDTH = 80
@@ -39,7 +39,6 @@ tileColors = {
 }
 
 game: CatanGame  # redefined to CatanGame type in makeGraphical function
-Coordinate = Tuple[int, int]
 
 
 # topLeft is the coordinate of the top left corner of the bounding box

@@ -11,17 +11,17 @@ def main():
     game.players[1 - 1].resources["brick"] += 3000
     game.players[1 - 1].resources["sheep"] += 3000
     game.players[1 - 1].resources["wheat"] += 3000
-    game.addSettlement(position=(3,9), player_num=1, start_of_game=True)
-    game._collect_surrounding_resources((3,9))
-    game.board.move_thief((3,3))
+    game.addSettlement(position=("point", (3,9)), player_num=1, start_of_game=True)
+    game._collect_surrounding_resources(("point", (3,9)))
+    game.board.get_desired_thief_location((3, 3))
     print("game.board.get_valid_city_locations(1) =", list(game.board.get_valid_city_locations(1)))
 
-    game.addSettlement(position=(1,2), player_num=1, start_of_game=True)
+    game.addSettlement(position=("point", (1,2)), player_num=1, start_of_game=True)
     print("game.board.get_valid_city_locations(1) =",list(game.board.get_valid_city_locations(1)))
     #print("After player 1 built 1 road, longest road owner was player", game.board.longest_road_owner, "with",
     #      game.players[game.board.longest_road_owner - 1].victory_points, "victory points")
     #print("victory points situation:", list(map(lambda player: player.victory_points, game.players)))
-    game.addRoad(point1=(3,8), point2=(3,9), player_num=1)
+    game.addRoad(road=(("point", (3,8)), ("point", (3,9))), player_num=1)
     #print("After player 1 built 2 roads, longest road owner was player", game.board.longest_road_owner, "with",
     #      game.players[game.board.longest_road_owner - 1].victory_points, "victory points")
     #print("victory points situation:", list(map(lambda player: player.victory_points, game.players)))
@@ -29,8 +29,8 @@ def main():
     #      game.players[game.board.longest_road_owner - 1].victory_points, "victory points")
     #print("victory points situation:", list(map(lambda player: player.victory_points, game.players)))
 
-    game.addSettlement(position=(4, 5), player_num=1, start_of_game=True)
-    game.addSettlement(position=(5,2), player_num=1, start_of_game=True)
+    game.addSettlement(position=("point", (4, 5)), player_num=1, start_of_game=True)
+    game.addSettlement(position=("point", (5,2)), player_num=1, start_of_game=True)
     print("game.board.get_valid_city_locations(1) =",list(game.board.get_valid_city_locations(1)))
 
     '''game.addRoad((3, 2), (3,3), 3)

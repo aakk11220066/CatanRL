@@ -1,14 +1,14 @@
 import networkx as nx
-import Tile
+from CatanGame import Tile
 from Building import BuildingTypes
 from Building import is_valid_settlement_position, is_valid_road_position
-from Tile import TileType
+from CatanGame.Tile import TileType
 from Shared_Constants import RANDOM_SEED, NO_PLAYER
-from typing import Tuple, List, Iterable
+from Shared_Constants import Coordinate, TileCoordinate, PlayerNumber, PointCoordinate, RoadPlacement
+from typing import List, Iterable
 from random import choice
 import random
 
-Coordinate = Tuple[int, int]
 rowWidths: List  # defined by _hexagonalBoard
 
 random.seed(RANDOM_SEED)
@@ -160,15 +160,15 @@ class Board:
         self.longest_road_owner = NO_PLAYER
         self.longest_road_length = 1
 
-    def _add_thief(self, thief_location: Coordinate):
-        self.graph.nodes[("tile", thief_location)]['thief'] = True
+    def _add_thief(self, thief_location: TileCoordinate):
+        self.graph.nodes[thief_location]['thief'] = True
         self.thief_location = thief_location
 
-    def move_thief(self, thief_new_location: Coordinate):
+    def move_thief(self, thief_new_location: TileCoordinate):
         self.graph.nodes[("tile", self.thief_location)]["thief"] = False
         self._add_thief(thief_new_location)
 
-    def get_longest_road_length(self, player: int) -> int:
+    def get_longest_road_length(self, player: PlayerNumber) -> int:
         players_edges = list((u, v) for u, v, edge in self.graph.edges(data=True)
                              if "owner" in edge and edge["owner"] == player)
         player_subgraph = nx.Graph(players_edges)
@@ -181,32 +181,32 @@ class Board:
 
         return longest_road_length
 
-    def get_valid_settlement_locations(self, player: int, start_of_game: bool = False) -> Iterable[
-        Tuple[str, Coordinate]]:
+    def get_valid_settlement_locations(self, player: PlayerNumber, start_of_game: bool = False) \
+            -> Iterable[PointCoordinate]:
         return filter(
             lambda node_label: is_valid_settlement_position(self.graph, node_label[1], player, start_of_game) and
                                node_label[0] == "point",
             self.graph.nodes
         )
 
-    def get_valid_city_locations(self, player: int) -> Iterable[Tuple[str, Coordinate]]:
+    def get_valid_city_locations(self, player: PlayerNumber) -> Iterable[PointCoordinate]:
         return (node_data[0] for node_data in self.graph.nodes(data=True) if
                 node_data[0][0] == "point" and
                 node_data[1]["owner"] == player and
                 node_data[1]["building"] is BuildingTypes.Settlement
-        )
+                )
 
-    def get_valid_road_locations(self, player) -> Iterable[Tuple[Tuple[str, Coordinate], Tuple[str, Coordinate]]]:
+    def get_valid_road_locations(self, player) -> Iterable[RoadPlacement]:
         return filter(
             lambda edge_label: is_valid_road_position(self.graph, edge_label[0][1], edge_label[1][1], player) and
                                edge_label[0][0] == "point" and edge_label[1][0] == "point",
             self.graph.edges
         )
 
-    def get_surrounding_tiles(self, settlement_location: Coordinate):
+    def get_surrounding_tiles(self, settlement_location: PointCoordinate):
         return filter(
             lambda node_label: node_label[0] == "tile",
-            self.graph.neighbors(("point", settlement_location))
+            self.graph.neighbors(("point", settlement_location[1]))
         )
 
 

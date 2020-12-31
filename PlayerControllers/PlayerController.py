@@ -1,10 +1,17 @@
-from Board import Board
+from CatanGame.Board import Board
 from abc import ABC, abstractmethod
+
+from Shared_Constants import PlayerNumber
+from GymInterface import GymInterface
+from CatanGame.CatanGame import CatanGame
 
 
 class PlayerController(ABC):
+    def __init__(self, player_num: PlayerNumber, game: CatanGame):
+        self.player_num = player_num
+
     @abstractmethod
-    def move_thief(self, observation):
+    def get_desired_thief_location(self, observation):
         raise NotImplementedError()
 
     @abstractmethod

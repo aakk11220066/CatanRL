@@ -1,16 +1,23 @@
-import Exceptions
-import random
-import Board
+from typing import Dict, Union, List, Tuple
+
+from CatanGame import Exceptions
+import CatanGame.Board as Board
 import CatanGame
-from abc import ABC, abstractmethod
+from Shared_Constants import TileCoordinate, PointCoordinate, RoadPlacement, Resource
 
 
-class Player(ABC):
+class Player:
     def __init__(self, player_number: int):
         self.player_number = player_number
         # resources to build first 2 settlements and 2 roads at beginning of game
         self.resources = {"sheep": 2, "wheat": 2, "wood": 4, "brick": 4, "ore": 0}
         self.victory_points = 0
+
+        # ------ turn-controlling params to be controlled by gym ------
+        self.desired_beginning_settlement_and_road_location: Tuple[PointCoordinate, RoadPlacement] = None
+        self.desired_thief_location: TileCoordinate = None
+        self.desired_shopping_list: Dict[Resource, List[Union[RoadPlacement, PointCoordinate]]] = None
+        self.desired_trades_list: Dict[Resource, Resource] = None
 
     def spend_resources(self, sheep=0, wheat=0, wood=0, brick=0, ore=0):
         if self.resources["sheep"] < sheep \
@@ -65,39 +72,39 @@ class Player(ABC):
             actions.append('development_card')
         return actions
 
-    @abstractmethod
     def move_thief(self, board: Board):
-        raise NotImplementedError()
+        board.get_desired_thief_location(self.desired_thief_location)
 
     def _get_number_of_resources(self):
         return sum(list(self.resources.values()))
-        
-    @abstractmethod    
+
     def dropHalfCards(self):
         raise NotImplementedError()
 
-    @abstractmethod
     def buildSettlementAndRoadRound1(self, game: CatanGame):
-        raise NotImplementedError()
+        game.addSettlement(self.desired_beginning_settlement_and_road_location[0])
+        game.addRoad(self.desired_beginning_settlement_and_road_location[1])
 
-    @abstractmethod
     def buildSettlementAndRoadRound2(self, game: CatanGame):
-        raise NotImplementedError()
+        self.buildSettlementAndRoadRound1(game)
+        # TODO: collect resources
 
     # purposely unimplemented, merely a placeholder function for future development
     def trade_resources(self):  # ABSTRACT
         raise NotImplementedError()
 
     # purposely unimplemented, merely a placeholder function for future development
-    @abstractmethod
     def play_development_cards(self):  # ABSTRACT
         raise NotImplementedError()
 
     # purposely unimplemented, merely a placeholder function for future development
-    @abstractmethod
     def trade_cards(self):  # ABSTRACT
         raise NotImplementedError()
 
-    @abstractmethod
-    def buy_road_or_settlement_or_city_or_development_card(self, game: CatanGame):
-        raise NotImplementedError()
+    def purchase_buildings_and_cards(self, game: CatanGame):
+        for road in self.desired_shopping_list["roads"]:
+            game.addRoad(road)
+        for settlement in self.desired_shopping_list["settlements"]:
+            game.addSettlement(settlement)
+        for city in self.desired_shopping_list["cities"]:
+            game.addCity(city)

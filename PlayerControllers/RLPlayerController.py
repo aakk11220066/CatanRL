@@ -1,11 +1,10 @@
-from Board import Board
-from PlayerController import PlayerController
+from PlayerControllers.PlayerController import PlayerController
 
 Action = dict
 
 # All functions of controller should return Actions
 class RLPlayerController(PlayerController):
-    def move_thief(self, observation):
+    def get_desired_thief_location(self, observation):
         raise NotImplementedError()
 
     def dropHalfCards(self, observation):
