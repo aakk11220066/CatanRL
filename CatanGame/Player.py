@@ -3,13 +3,13 @@ from typing import Dict, Union, List, Tuple
 from CatanGame import Exceptions
 import CatanGame.Board as Board
 import CatanGame
-from Shared_Constants import TileCoordinate, PointCoordinate, RoadPlacement, Resource
+from Shared_Constants import TileCoordinate, PointCoordinate, RoadPlacement, Resource, PlayerNumber
 
 
 class Player:
-    def __init__(self, player_number: int):
-        self.player_number = player_number
-        # resources to build first 2 settlements and 2 roads at beginning of game
+    def __init__(self, player_num: PlayerNumber):
+        self.player_num = player_num
+        # available_resources to build first 2 settlements and 2 roads at beginning of game
         self.resources = {"sheep": 2, "wheat": 2, "wood": 4, "brick": 4, "ore": 0}
         self.victory_points = 0
 
@@ -34,14 +34,14 @@ class Player:
         self.resources["ore"] -= ore
     
     def valid_buy_road(self, game: CatanGame):
-        valid_road_locations = game.board.get_valid_road_locations(player=self.player_number)
+        valid_road_locations = game.board.get_valid_road_locations(player=self.player_num)
         if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
             bool(list(valid_road_locations)):
             return True
         return False
     
     def valid_buy_settlement(self, game: CatanGame):
-        valid_settlement_locations = game.board.get_valid_settlement_locations(player=self.player_number)
+        valid_settlement_locations = game.board.get_valid_settlement_locations(player=self.player_num)
         if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
             self.resources["sheep"]>=1 and self.resources["wheat"]>=1 and \
                 bool(list(valid_settlement_locations)):
@@ -49,7 +49,7 @@ class Player:
         return False
 
     def valid_buy_city(self, game: CatanGame):
-        valid_city_locations = game.board.get_valid_city_locations(player=self.player_number)
+        valid_city_locations = game.board.get_valid_city_locations(player=self.player_num)
         if self.resources["wheat"]>=2 and self.resources["ore"]>=3 and \
             bool(list(valid_city_locations)):
             return True
@@ -73,7 +73,8 @@ class Player:
         return actions
 
     def move_thief(self, board: Board):
-        board.get_desired_thief_location(self.desired_thief_location)
+        board.move_thief(self.desired_thief_location)
+        print("Moved thief to", self.desired_thief_location)
 
     def _get_number_of_resources(self):
         return sum(list(self.resources.values()))
@@ -82,12 +83,16 @@ class Player:
         raise NotImplementedError()
 
     def buildSettlementAndRoadRound1(self, game: CatanGame):
-        game.addSettlement(self.desired_beginning_settlement_and_road_location[0])
-        game.addRoad(self.desired_beginning_settlement_and_road_location[1])
+        game.addSettlement(
+            position=self.desired_beginning_settlement_and_road_location[0],
+            player_num=self.player_num,
+            start_of_game=True
+        )
+        game.addRoad(road=self.desired_beginning_settlement_and_road_location[1], player_num=self.player_num)
 
     def buildSettlementAndRoadRound2(self, game: CatanGame):
         self.buildSettlementAndRoadRound1(game)
-        # TODO: collect resources
+        # TODO: collect available_resources
 
     # purposely unimplemented, merely a placeholder function for future development
     def trade_resources(self):  # ABSTRACT
@@ -103,8 +108,8 @@ class Player:
 
     def purchase_buildings_and_cards(self, game: CatanGame):
         for road in self.desired_shopping_list["roads"]:
-            game.addRoad(road)
+            game.addRoad(road=road, player_num=self.player_num)
         for settlement in self.desired_shopping_list["settlements"]:
-            game.addSettlement(settlement)
+            game.addSettlement(position=settlement, player_num=self.player_num)
         for city in self.desired_shopping_list["cities"]:
-            game.addCity(city)
+            game.addCity(position=city, player_num=self.player_num)

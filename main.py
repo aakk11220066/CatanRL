@@ -1,9 +1,9 @@
-from GUI import GUI
+from CatanGame.GUI import GUI
 import CatanGame
 
 
 def main():
-    game = CatanGame.CatanGame(board_size=3, function_delay=0.5)
+    game = CatanGame.CatanGame.CatanGame(board_size=3, function_delay=0.5)
     gui = GUI(game)
     gui.start()
 
@@ -13,7 +13,7 @@ def main():
     game.players[1 - 1].resources["wheat"] += 3000
     game.addSettlement(position=("point", (3,9)), player_num=1, start_of_game=True)
     game._collect_surrounding_resources(("point", (3,9)))
-    game.board.get_desired_thief_location((3, 3))
+    game.board.move_thief(("point", (3, 3)))
     print("game.board.get_valid_city_locations(1) =", list(game.board.get_valid_city_locations(1)))
 
     game.addSettlement(position=("point", (1,2)), player_num=1, start_of_game=True)

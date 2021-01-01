@@ -22,17 +22,17 @@ class CatanGame:
                  function_delay=0):
         self.board = Board.Board(boardSize=board_size)
         # Note: player number i should go in cell number i-1 (e.g. player 1 goes in cell 0)
-        self.players = [Player(player_number=player) for player in order_player_game]
+        self.players = [Player(player_num=player) for player in order_player_game]
         self.function_delay = function_delay
         self.threshold_victory_points = threshold_victory_points
 
     def addSettlement(self, position: PointCoordinate, player_num: PlayerNumber, start_of_game: bool = False):
         if not Building.is_valid_settlement_position(self.board.graph, position[1], player_num, start_of_game):
             raise Exceptions.InvalidSettlementPlacementException()
-        self.players[player_num - 1].spend_resources(wood=1, brick=1, wheat=1, sheep=1)
+        self.players[player_num - 1].spend_resources(**Building.prices["settlement"])
 
-        self.board.graph.nodes[("point", position[1])]["owner"] = player_num
-        self.board.graph.nodes[("point", position[1])]["building"] = Building.BuildingTypes.Settlement
+        self.board.graph.nodes[position]["owner"] = player_num
+        self.board.graph.nodes[position]["building"] = Building.BuildingTypes.Settlement
         self.players[player_num - 1].victory_points += 1
 
         time.sleep(self.function_delay)
@@ -40,7 +40,7 @@ class CatanGame:
     def addCity(self, position: PointCoordinate, player_num: PlayerNumber):
         if not Building.is_valid_city_position(self.board.graph, position[1], player_num):
             raise Exceptions.InvalidCityPlacementException()
-        self.players[player_num - 1].spend_resources(wheat=2, ore=3)
+        self.players[player_num - 1].spend_resources(**Building.prices["city"])
 
         self.board.graph.nodes[("point", position[1])]["owner"] = player_num
         self.board.graph.nodes[("point", position[1])]["building"] = Building.BuildingTypes.City
@@ -51,11 +51,11 @@ class CatanGame:
     def addRoad(self, road: RoadPlacement, player_num: PlayerNumber):
         point1, point2 = road
 
-        if not Building.is_valid_road_position(self.board.graph, point1[1], point2[1], player_num):
+        if not Building.is_valid_road_position(board=self.board.graph, road=road, player=player_num):
             raise Exceptions.InvalidRoadPlacementException()
-        self.players[player_num - 1].spend_resources(wood=1, brick=1)
+        self.players[player_num - 1].spend_resources(**Building.prices["road"])
 
-        self.board.graph[("point", point1)][("point", point2)]["owner"] = player_num
+        self.board.graph[point1][point2]["owner"] = player_num
         players_longest_road = self.board.get_longest_road_length(player=player_num)
         if players_longest_road > self.board.longest_road_length:
             self.board.longest_road_length = players_longest_road
@@ -90,7 +90,7 @@ class CatanGame:
     def endGame(self):
         for player in self.players:
             if player.victory_points >= self.threshold_victory_points:
-                print("The player ", player.player_number, " won the game with ", player.victory_points,
+                print("The player ", player.player_num, " won the game with ", player.victory_points,
                       " victory points!")
                 return True
         return False
@@ -98,8 +98,8 @@ class CatanGame:
     # ---- helper methods -----
 
     def _collect_surrounding_resources(self, settlement_location: PointCoordinate):
-        player_num = self.board.graph.nodes[("point", settlement_location)]["owner"]
-        assert (player_num != Shared_Constants.NO_PLAYER)
+        player_num = self.board.graph.nodes[settlement_location]["owner"]
+        # assert (player_num != Shared_Constants.NO_PLAYER)
         for tile_type in map(lambda tile_label: self.board.graph.nodes[tile_label]["tile_type"],
                              self.board.get_surrounding_tiles(settlement_location)):
             resource_type = tiletype_to_resourcetype(tile_type)

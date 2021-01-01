@@ -247,10 +247,10 @@ def makeGraphical(getPlayerColor, render_request_status : bool):
         screen.fill(BLACK)
         board = empty_board.copy()
 
-        thief_xAlign = xAlign(Board.rowWidths[game.board.thief_location[0]])
+        thief_xAlign = xAlign(Board.rowWidths[game.board.thief_location[1][0]])
         thief_graphical_position = (
-            thief_xAlign + (HEX_WIDTH * (game.board.thief_location[1] + 0.5)) - (THIEF_WIDTH * 0.5),
-            yAlign(len(Board.rowWidths)) + (HEX_HEIGHT * (3 * game.board.thief_location[0] / 4 + 0.5)) -
+            thief_xAlign + (HEX_WIDTH * (game.board.thief_location[1][1] + 0.5)) - (THIEF_WIDTH * 0.5),
+            yAlign(len(Board.rowWidths)) + (HEX_HEIGHT * (3 * game.board.thief_location[1][0] / 4 + 0.5)) -
                 (THIEF_HEIGHT * 0.5)
         )
         drawThief(board, thief_graphical_position)

@@ -1,7 +1,7 @@
 import networkx as nx
 from CatanGame import Tile
-from Building import BuildingTypes
-from Building import is_valid_settlement_position, is_valid_road_position
+from CatanGame.Building import BuildingTypes
+from CatanGame.Building import is_valid_settlement_position, is_valid_road_position
 from CatanGame.Tile import TileType
 from Shared_Constants import RANDOM_SEED, NO_PLAYER
 from Shared_Constants import Coordinate, TileCoordinate, PlayerNumber, PointCoordinate, RoadPlacement
@@ -153,7 +153,7 @@ Graph is undirected, of course.  Every tile is connected to all 6 points around 
 
 
 class Board:
-    def __init__(self, boardSize=3, thief_location=(1, 1)):  # locate thief at random location?
+    def __init__(self, boardSize=3, thief_location: TileCoordinate = ("tile", (1, 1))):  # locate thief at random location?
         self.graph = _hexagonalBoard(boardSize)
         self.boardSize = boardSize
         self._add_thief(thief_location)
@@ -165,7 +165,7 @@ class Board:
         self.thief_location = thief_location
 
     def move_thief(self, thief_new_location: TileCoordinate):
-        self.graph.nodes[("tile", self.thief_location)]["thief"] = False
+        self.graph.nodes[self.thief_location]["thief"] = False
         self._add_thief(thief_new_location)
 
     def get_longest_road_length(self, player: PlayerNumber) -> int:
@@ -196,17 +196,22 @@ class Board:
                 node_data[1]["building"] is BuildingTypes.Settlement
                 )
 
-    def get_valid_road_locations(self, player) -> Iterable[RoadPlacement]:
+    def get_valid_road_locations(self, player: PlayerNumber, upcoming_settlement_location: PointCoordinate = None) \
+            -> Iterable[RoadPlacement]:
         return filter(
-            lambda edge_label: is_valid_road_position(self.graph, edge_label[0][1], edge_label[1][1], player) and
-                               edge_label[0][0] == "point" and edge_label[1][0] == "point",
+            lambda edge_label: edge_label[0][0] == "point" and edge_label[1][0] == "point" and
+                               is_valid_road_position(
+                                   board=self.graph,
+                                   road=edge_label,
+                                   player=player,
+                                   upcoming_settlement_location=upcoming_settlement_location),
             self.graph.edges
         )
 
     def get_surrounding_tiles(self, settlement_location: PointCoordinate):
         return filter(
             lambda node_label: node_label[0] == "tile",
-            self.graph.neighbors(("point", settlement_location[1]))
+            self.graph.neighbors(settlement_location)
         )
 
 
