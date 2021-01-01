@@ -3,6 +3,7 @@ from enum import Enum
 
 RANDOM_SEED = 42
 NO_PLAYER = -1
+BANK_TRADE_PRICE = 4
 
 Coordinate = Tuple[int, int]
 TileCoordinate = Tuple[str, Coordinate]
@@ -17,3 +18,4 @@ class ActionType(Enum):
     SECOND_BUILDING = 1
     THIEF_PLACEMENT = 2
     BUILDINGS_PURCHASE = 3
+    TRADE_RESOURCES = 4

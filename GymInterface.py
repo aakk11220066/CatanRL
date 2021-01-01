@@ -43,7 +43,7 @@ class GymInterface(gym.Env):
 
     # -------------------- Gym methods -----------------
 
-    def step(self, action: dict):  # TODO: document actions
+    def step(self, action: dict):
         if action['action_type'] == ActionType.FIRST_BUILDING:
             self._build_first_buildings_round1(
                 settlement_location=action['building_locations']["settlement"],
@@ -59,6 +59,10 @@ class GymInterface(gym.Env):
         elif action['action_type'] == ActionType.THIEF_PLACEMENT:
             self.game.players[self.player_num - 1].desired_thief_location = action['desired_thief_location']
             self.game.rollDice(player_num=self.player_num)
+
+        elif action['action_type'] == ActionType.TRADE_RESOURCES:
+            self.game.players[self.player_num - 1].desired_trades_list = action['desired_trades']
+            self.game.players[self.player_num - 1].trade_resources()
 
         elif action['action_type'] == ActionType.BUILDINGS_PURCHASE:
             self._buy_buildings(purchases=action['purchases'])

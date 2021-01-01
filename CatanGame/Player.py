@@ -3,7 +3,7 @@ from typing import Dict, Union, List, Tuple
 from CatanGame import Exceptions
 import CatanGame.Board as Board
 import CatanGame
-from Shared_Constants import TileCoordinate, PointCoordinate, RoadPlacement, Resource, PlayerNumber
+from Shared_Constants import TileCoordinate, PointCoordinate, RoadPlacement, Resource, PlayerNumber, BANK_TRADE_PRICE
 
 
 class Player:
@@ -17,7 +17,7 @@ class Player:
         self.desired_beginning_settlement_and_road_location: Tuple[PointCoordinate, RoadPlacement] = None
         self.desired_thief_location: TileCoordinate = None
         self.desired_shopping_list: Dict[Resource, List[Union[RoadPlacement, PointCoordinate]]] = None
-        self.desired_trades_list: Dict[Resource, Resource] = None
+        self.desired_trades_list: List[Tuple[Resource, Resource]] = None # List of trade_from, trade_to
 
     def spend_resources(self, sheep=0, wheat=0, wood=0, brick=0, ore=0):
         if self.resources["sheep"] < sheep \
@@ -82,6 +82,12 @@ class Player:
     def dropHalfCards(self):
         raise NotImplementedError()
 
+    def trade_resources(self):
+        for trade in self.desired_trades_list:
+            self.spend_resources(**{trade[0]: BANK_TRADE_PRICE})
+            self.resources[trade[1]] += 1
+            print(f'Player {self.player_num} traded {BANK_TRADE_PRICE} {trade[0]} for 1 {trade[1]}')
+
     def buildSettlementAndRoadRound1(self, game: CatanGame):
         game.addSettlement(
             position=self.desired_beginning_settlement_and_road_location[0],
@@ -94,9 +100,6 @@ class Player:
         self.buildSettlementAndRoadRound1(game)
         # TODO: collect available_resources
 
-    # purposely unimplemented, merely a placeholder function for future development
-    def trade_resources(self):  # ABSTRACT
-        raise NotImplementedError()
 
     # purposely unimplemented, merely a placeholder function for future development
     def play_development_cards(self):  # ABSTRACT

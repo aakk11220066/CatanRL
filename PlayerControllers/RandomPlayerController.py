@@ -108,8 +108,28 @@ class RandomPlayerController(PlayerController):
         # development_card_action = ['DO_NOTHING'].expend(self.development_cards)
         # print(random.choice(development_card_action))
 
-    def trade_cards(self):
-        print('Player', self.player_num, 'trade_cards or do_nothing')
+    def get_desired_trade(self, observation):
+        available_resources = observation[1].copy()
+        desired_trades = []
+        trade_from_resource = None
+        while True:
+            trade_from_resource = random.choice(
+                list(filter(
+                    lambda resource: available_resources[resource] >= Shared_Constants.BANK_TRADE_PRICE,
+                    available_resources
+                )) + ["do_nothing"]
+            )
+            trade_to_resource = random.choice(list(observation[1].keys()))
+            if trade_from_resource == trade_to_resource:
+                continue
+            if trade_from_resource == "do_nothing":
+                break
+            desired_trades.append((trade_from_resource, trade_to_resource))
+            available_resources[trade_from_resource] -= Shared_Constants.BANK_TRADE_PRICE
+        return {
+            "action_type": Shared_Constants.ActionType.TRADE_RESOURCES,
+            "desired_trades": desired_trades
+        }
 
     def purchase_buildings_and_cards(self, observation: Tuple[Board, Dict[str, int]]):
         available_resources = observation[1].copy()

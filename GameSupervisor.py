@@ -11,7 +11,7 @@ from GymInterface import GymInterface
 from PlayerControllers.PlayerController import PlayerController
 from PlayerControllers.RandomPlayerController import RandomPlayerController
 
-# TODO: divide files into folders, add README, add .gitignore
+# DONE: divide files into folders, add README, add .gitignore
 class GameSupervisor:
     def __init__(self, gui: bool = True, board_size: int = 3, order_player_game: List[int] = [1,2,3],
                  function_delay = 0.1):
@@ -75,33 +75,34 @@ class GameSupervisor:
         observation, reward, done, info = gym_interface.step(action)
         controller.log_reward(reward=reward)
 
-        #self.game.players[player - 1].trade_cards()  # Future implemention
+        action = controller.get_desired_trade(observation=observation)
+        observation, reward, done, info = gym_interface.step(action)
+        controller.log_reward(reward=reward)
 
         action = controller.purchase_buildings_and_cards(observation=observation)
         observation, reward, done, info = gym_interface.step(action=action)
         controller.log_reward(reward=reward)
 
-        print(f"player {controller.player_num} victory points: {gym_interface.game.players[controller.player_num-1].victory_points}")
-        print(f"player {controller.player_num} resources: {observation[1]}")
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
         return observation
 
-    def _boost_resources(self):
+    def _boost_resources(self, amount: int = 10):
         """
         Gives all players a large boost of available_resources to make the game easier to demonstrate
         """
         for player in self.game.players:
-            player.resources["sheep"] += 10
-            player.resources["wheat"] += 10
-            player.resources["wood"] += 10
-            player.resources["brick"] += 10
-            player.resources["ore"] += 10
+            player.resources["sheep"] += amount
+            player.resources["wheat"] += amount
+            player.resources["wood"] += amount
+            player.resources["brick"] += amount
+            player.resources["ore"] += amount
 
 
 # DONE: add game + game_supervisor server that multiple gym environments attach to to allow for multiple RL agents
 # DONE: random player should engage with this server too
 if __name__ == "__main__":
-    supervisor = GameSupervisor(gui=False, function_delay=0)
+    supervisor = GameSupervisor(gui=True)
+    # supervisor._boost_resources(100000000000)
     supervisor.run_game()
 

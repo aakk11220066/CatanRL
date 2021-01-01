@@ -30,6 +30,10 @@ class PlayerController(ABC):
         raise NotImplementedError()
 
     @abstractmethod
+    def get_desired_trade(self, observation) -> Action:
+        raise NotImplementedError()
+
+    @abstractmethod
     def purchase_buildings_and_cards(self, observation) -> Action:
         raise NotImplementedError()
 
