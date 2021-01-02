@@ -28,14 +28,14 @@ class GymInterface(gym.Env):
                                       road_location: RoadPlacement):
         self.game.players[self.player_num - 1].desired_beginning_settlement_and_road_location = \
             (settlement_location, road_location)
-        self.game.players[self.player_num - 1].buildSettlementAndRoadRound1(game=self.game)
+        self.game.players[self.player_num - 1].build_settlement_and_road_round_1(game=self.game)
 
     def _build_first_buildings_round2(self,
                                       settlement_location: PointCoordinate,
                                       road_location: RoadPlacement):
         self.game.players[self.player_num - 1].desired_beginning_settlement_and_road_location = \
             (settlement_location, road_location)
-        self.game.players[self.player_num - 1].buildSettlementAndRoadRound2(game=self.game)
+        self.game.players[self.player_num - 1].build_settlement_and_road_round_2(game=self.game)
 
     def _buy_buildings(self, purchases: Dict):
         self.game.players[self.player_num - 1].desired_shopping_list = purchases
@@ -58,7 +58,7 @@ class GymInterface(gym.Env):
 
         elif action['action_type'] == ActionType.THIEF_PLACEMENT:
             self.game.players[self.player_num - 1].desired_thief_location = action['desired_thief_location']
-            self.game.rollDice(player_num=self.player_num)
+            self.game.roll_dice(player_num=self.player_num)
 
         elif action['action_type'] == ActionType.TRADE_RESOURCES:
             self.game.players[self.player_num - 1].desired_trades_list = action['desired_trades']
@@ -78,7 +78,7 @@ class GymInterface(gym.Env):
         reward = self.game.players[self.player_num - 1].victory_points - self.prev_victory_points
         self.prev_victory_points = self.game.players[self.player_num - 1].victory_points
 
-        done = self.game.endGame()
+        done = self.game.end_game()
 
         info = None
 

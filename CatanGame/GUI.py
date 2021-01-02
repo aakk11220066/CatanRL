@@ -38,11 +38,11 @@ tileColors = {
     TileType.OCEAN: (0, 125, 250)
 }
 
-game: CatanGame  # redefined to CatanGame type in makeGraphical function
+game: CatanGame  # redefined to CatanGame type in make_graphical function
 
 
 # topLeft is the coordinate of the top left corner of the bounding box
-def addHexagon(board, color, topLeftCorner: Coordinate):
+def add_hexagon(board, color, topLeftCorner: Coordinate):
     pygame.draw.polygon(board, color,
                         (
                             (topLeftCorner[0] + 0, topLeftCorner[1] + HEX_HEIGHT / 4),
@@ -68,15 +68,15 @@ def addHexagon(board, color, topLeftCorner: Coordinate):
     )
 
 
-def xAlign(rowWidth):
+def x_align(rowWidth):
     return (BOARD_PIXEL_DIMENSIONS / 2) - (HEX_WIDTH * rowWidth / 2)
 
 
-def yAlign(numRows):
+def y_align(numRows):
     return (BOARD_PIXEL_DIMENSIONS / 2) - (3 * HEX_HEIGHT * numRows / 8)
 
 
-def setupBoard():
+def setup_board():
     # Create background
     board = pygame.Surface((BOARD_PIXEL_DIMENSIONS, BOARD_PIXEL_DIMENSIONS))
     board.fill(DARK_BLUE)
@@ -102,10 +102,10 @@ def setupBoard():
     # add hexagons
     for (row, rowWidth) in enumerate(rowWidths):
         for col in range(rowWidth):
-            topLeftCorner = (xAlign(rowWidth) + col * HEX_WIDTH, yAlign(len(rowWidths)) + 3 * row * HEX_HEIGHT / 4)
+            topLeftCorner = (x_align(rowWidth) + col * HEX_WIDTH, y_align(len(rowWidths)) + 3 * row * HEX_HEIGHT / 4)
             tileData = game.board.graph.nodes[("tile", (row, col))]
 
-            addHexagon(board, tileColors[tileData["tile_type"]],
+            add_hexagon(board, tileColors[tileData["tile_type"]],
                        topLeftCorner)
             if tileData["tile_type"] not in {TileType.DESERT, TileType.OCEAN}:
                 pygame.draw.circle(board, WHITE,
@@ -125,7 +125,7 @@ def setupBoard():
     return board
 
 
-def drawThief(board : pygame.Surface, topLeftCorner: Coordinate):
+def draw_thief(board : pygame.Surface, topLeftCorner: Coordinate):
     pygame.draw.circle(board, BLACK,  # head
                        (int(topLeftCorner[0] + THIEF_WIDTH // 2), int(topLeftCorner[1] + THIEF_WIDTH // 2)),
                        THIEF_HEIGHT // 8)
@@ -156,20 +156,20 @@ def drawThief(board : pygame.Surface, topLeftCorner: Coordinate):
                      )
 
 
-def getCornerCoordinates(cornerIndex: Coordinate):
+def get_corner_coordinates(cornerIndex: Coordinate):
     # offset of bottom half of board because top indices of hexagon now have higher index than lower
     if Board.get_board_half(cornerIndex[0], game.board.boardSize+1) == "lower":
         cornerIndex = cornerIndex[0], cornerIndex[1]-1
 
     rowWidth = Board.rowWidths[cornerIndex[0]]
     return (
-        xAlign(rowWidth) + (cornerIndex[1] * (HEX_WIDTH / 2)),
-        yAlign(len(Board.rowWidths)) + 3 * HEX_HEIGHT * cornerIndex[0] / 4 + (1 - (cornerIndex[1] % 2)) * (
+        x_align(rowWidth) + (cornerIndex[1] * (HEX_WIDTH / 2)),
+        y_align(len(Board.rowWidths)) + 3 * HEX_HEIGHT * cornerIndex[0] / 4 + (1 - (cornerIndex[1] % 2)) * (
                 HEX_HEIGHT / 4)
     )
 
 
-def drawRoads(board, getPlayerColor):
+def draw_roads(board, getPlayerColor):
     for point_one_coordinates, point_two_coordinates in (
             (tagged_point1[1], tagged_point2[1]) for tagged_point1, tagged_point2 in game.board.graph.edges
             if (tagged_point1[0], tagged_point2[0]) == ("point", "point")
@@ -177,18 +177,18 @@ def drawRoads(board, getPlayerColor):
     ):
         pygame.draw.line(board,
             getPlayerColor(game.board.graph[("point", point_one_coordinates)][("point", point_two_coordinates)]["owner"]),
-            getCornerCoordinates(point_one_coordinates),
-            getCornerCoordinates(point_two_coordinates),
+            get_corner_coordinates(point_one_coordinates),
+            get_corner_coordinates(point_two_coordinates),
             ROAD_THICKNESS
         )
 
 
-def drawSettlements(board, getPlayerColor):
+def draw_settlements(board, getPlayerColor):
     for point in (game.board.graph.nodes[tagged_point] for tagged_point in game.board.graph.nodes
                 if tagged_point[0] == 'point'
                 and (game.board.graph.nodes[tagged_point]["building"]) == Building.BuildingTypes.Settlement
                 ):
-        rectangle_topLeftCorner = list(getCornerCoordinates(point["position"]))
+        rectangle_topLeftCorner = list(get_corner_coordinates(point["position"]))
         color = getPlayerColor(point["owner"])
         rectangle_topLeftCorner[0] = rectangle_topLeftCorner[0] - SETTLEMENT_WIDTH / 2
         rectangle_topLeftCorner[1] = rectangle_topLeftCorner[1] - SETTLEMENT_HEIGHT / 4
@@ -206,12 +206,12 @@ def drawSettlements(board, getPlayerColor):
                             )
 
 
-def drawCities(board, getPlayerColor):
+def draw_cities(board, getPlayerColor):
     for point in (game.board.graph.nodes[tagged_point] for tagged_point in game.board.graph.nodes
                 if tagged_point[0] == 'point'
                 and (game.board.graph.nodes[tagged_point]["building"]) == Building.BuildingTypes.City
                 ):
-        city_topLeftCorner = list(getCornerCoordinates(point["position"]))
+        city_topLeftCorner = list(get_corner_coordinates(point["position"]))
         color = getPlayerColor(point["owner"])
         city_topLeftCorner[0] = city_topLeftCorner[0] - CITY_WIDTH / 4
         city_topLeftCorner[1] = city_topLeftCorner[1] - CITY_HEIGHT / 2
@@ -231,13 +231,13 @@ def drawCities(board, getPlayerColor):
                             )
 
 
-def makeGraphical(getPlayerColor, render_request_status : bool):
+def make_graphical(getPlayerColor, render_request_status : bool):
     global BOARD_PIXEL_DIMENSIONS
     BOARD_PIXEL_DIMENSIONS += HEX_HEIGHT*1.5*game.board.boardSize
 
     pygame.init()
     screen = pygame.display.set_mode((int(1.2 * BOARD_PIXEL_DIMENSIONS), int(1.2 * BOARD_PIXEL_DIMENSIONS)))
-    empty_board = setupBoard()
+    empty_board = setup_board()
 
     done = False
     clock = pygame.time.Clock()
@@ -247,17 +247,17 @@ def makeGraphical(getPlayerColor, render_request_status : bool):
         screen.fill(BLACK)
         board = empty_board.copy()
 
-        thief_xAlign = xAlign(Board.rowWidths[game.board.thief_location[1][0]])
+        thief_x_align = x_align(Board.rowWidths[game.board.thief_location[1][0]])
         thief_graphical_position = (
-            thief_xAlign + (HEX_WIDTH * (game.board.thief_location[1][1] + 0.5)) - (THIEF_WIDTH * 0.5),
-            yAlign(len(Board.rowWidths)) + (HEX_HEIGHT * (3 * game.board.thief_location[1][0] / 4 + 0.5)) -
+            thief_x_align + (HEX_WIDTH * (game.board.thief_location[1][1] + 0.5)) - (THIEF_WIDTH * 0.5),
+            y_align(len(Board.rowWidths)) + (HEX_HEIGHT * (3 * game.board.thief_location[1][0] / 4 + 0.5)) -
                 (THIEF_HEIGHT * 0.5)
         )
-        drawThief(board, thief_graphical_position)
+        draw_thief(board, thief_graphical_position)
         
-        drawRoads(board, getPlayerColor)
-        drawSettlements(board, getPlayerColor)
-        drawCities(board, getPlayerColor)
+        draw_roads(board, getPlayerColor)
+        draw_settlements(board, getPlayerColor)
+        draw_cities(board, getPlayerColor)
 
         # Draw board
         screen.blit(board, (int(BOARD_PIXEL_DIMENSIONS * 0.1), int(BOARD_PIXEL_DIMENSIONS * 0.1)))
@@ -288,4 +288,4 @@ class GUI(pygame.threads.Thread):
 
 
     def run(self):
-        makeGraphical(self.getPlayerColor, self.render_request_status)
+        make_graphical(self.getPlayerColor, self.render_request_status)

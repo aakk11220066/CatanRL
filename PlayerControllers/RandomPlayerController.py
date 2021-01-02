@@ -32,11 +32,11 @@ class RandomPlayerController(PlayerController):
             'desired_thief_location': thief_new_position
         }
 
-    '''def dropHalfCards(self):
+    '''def drop_half_cards(self):
         num_removed = self._get_number_of_resources() // 2
         for i in range(num_removed):
             d = dict((k, v) for k, v in self.available_resources.items() if v > 0)
-            self.available_resources[random.choice(_list(d))] -= 1'''
+            self.available_resources[random.choice(list(d))] -= 1'''
 
     def build_road_randomly(self,
                             observation: Tuple[Board, Dict[str, int]],
@@ -55,7 +55,6 @@ class RandomPlayerController(PlayerController):
             player=self.player_num,
             start_of_game=start_of_game
         )
-        valid_settlement_locations = list(valid_settlement_locations)
         try:
             return random.choice(list(valid_settlement_locations))
         except IndexError:  # valid_settlement_locations is empty
@@ -73,7 +72,7 @@ class RandomPlayerController(PlayerController):
         print('Decided to buy development card (not implemented yet)')
         return None
 
-    def buildSettlementAndRoadRound1(self, observation: Tuple[Board, Dict[str, int]]):
+    def build_settlement_and_road_round_1(self, observation: Tuple[Board, Dict[str, int]]):
         desired_settlement = self.build_settlement_randomly(observation=observation, start_of_game=True)
         desired_road = self.build_road_randomly(observation=observation,
                                                 upcoming_settlement_location=desired_settlement)
@@ -85,8 +84,7 @@ class RandomPlayerController(PlayerController):
             }
         }
 
-    def buildSettlementAndRoadRound2(self, observation: Tuple[Board, Dict[str, int]],
-                                     collect_resources_around_settlement: ()):
+    def build_settlement_and_road_round_2(self, observation: Tuple[Board, Dict[str, int]], collect_resources_around_settlement: ()):
         desired_settlement = self.build_settlement_randomly(observation, start_of_game=True)
         collect_resources_around_settlement(settlement_location=desired_settlement)
         valid_road_locations = observation[0].get_valid_road_locations(

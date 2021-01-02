@@ -2,16 +2,18 @@ from PlayerControllers.PlayerController import PlayerController
 
 Action = dict
 
-
 class RLPlayerController(PlayerController):
     # All functions of controller should return Actions
     def get_desired_thief_location(self, observation):
         raise NotImplementedError()
 
-    def buildSettlementAndRoadRound1(self, observation):
+    def drop_half_cards(self, observation):
+        raise NotImplementedError() # TODO
+
+    def build_settlement_and_road_round_1(self, observation):
         raise NotImplementedError()
 
-    def buildSettlementAndRoadRound2(self, observation, collect_resources_around_settlement: ()) \
+    def build_settlement_and_road_round_2(self, observation, collect_resources_around_settlement: ()) \
             -> Action:
         raise NotImplementedError()
 
