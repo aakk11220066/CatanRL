@@ -28,14 +28,16 @@ class GymInterface(gym.Env):
                                       road_location: RoadPlacement):
         self.game.players[self.player_num - 1].desired_beginning_settlement_and_road_location = \
             (settlement_location, road_location)
-        self.game.players[self.player_num - 1].build_settlement_and_road_round_1(game=self.game)
+        self.game.players[self.player_num - 1].build_initial_settlements_and_roads(game=self.game)
 
     def _build_first_buildings_round2(self,
                                       settlement_location: PointCoordinate,
                                       road_location: RoadPlacement):
-        self.game.players[self.player_num - 1].desired_beginning_settlement_and_road_location = \
-            (settlement_location, road_location)
-        self.game.players[self.player_num - 1].build_settlement_and_road_round_2(game=self.game)
+        self._build_first_buildings_round1(
+            settlement_location=settlement_location,
+            road_location=road_location
+        )
+        self.game.collect_surrounding_resources(settlement_location=settlement_location)
 
     def _buy_buildings(self, purchases: Dict):
         self.game.players[self.player_num - 1].desired_shopping_list = purchases
@@ -51,7 +53,7 @@ class GymInterface(gym.Env):
             )
 
         elif action["action_type"] == ActionType.SECOND_BUILDING:
-            self._build_first_buildings_round1(
+            self._build_first_buildings_round2(
                 settlement_location=action['building_locations']["settlement"],
                 road_location=action['building_locations']["road"]
             )

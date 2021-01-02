@@ -25,7 +25,7 @@ class PlayerController(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def build_settlement_and_road_round_2(self, observation, collect_resources_around_settlement: ()) \
+    def build_settlement_and_road_round_2(self, observation) \
             -> Action:
         raise NotImplementedError()
 

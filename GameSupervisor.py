@@ -19,6 +19,7 @@ class GameSupervisor:
         if gui:
             board_size, order_player_game = GameHelperFunctions.enter_parameters_game()
         self.board_size = board_size
+        self.function_delay = function_delay
         self.order_player_game = order_player_game
         self.game = CatanGame(board_size=board_size, order_player_game=order_player_game, function_delay=function_delay)
         self.controllers: List[Tuple[PlayerController, GymInterface]] = [
@@ -44,10 +45,7 @@ class GameSupervisor:
             controller.log_reward(reward=reward)
 
         for controller, gym_interface in reversed(self.controllers):
-            action = controller.build_settlement_and_road_round_2(
-                observation=beginning_observation,
-                collect_resources_around_settlement=self.game.collect_surrounding_resources
-            )
+            action = controller.build_settlement_and_road_round_2(observation=beginning_observation)
             beginning_observation, reward, done, info = gym_interface.step(action=action)
             controller.log_reward(reward=reward)
 
@@ -58,7 +56,11 @@ class GameSupervisor:
             observation, done, info = self._play_turn(*controller_pair, observation=observation)
 
     def reset(self):
-        self.game = CatanGame(board_size=self.board_size, order_player_game=self.order_player_game, function_delay=0.1)
+        self.game = CatanGame(
+            board_size=self.board_size,
+            order_player_game=self.order_player_game,
+            function_delay=self.function_delay
+        )
         if self.gui:
             GUI(self.game).start()
         for _, gym_interface in self.controllers:
@@ -104,6 +106,6 @@ class GameSupervisor:
 # DONE: add game + game_supervisor server that multiple gym environments attach to to allow for multiple RL agents
 # DONE: random player should engage with this server too
 if __name__ == "__main__":
-    supervisor = GameSupervisor(gui=True) # player1=red, player2=yellow, player3=green
+    supervisor = GameSupervisor(gui=True, function_delay=0.5) # player1=red, player2=yellow, player3=green
     supervisor.run_game(resource_boost_amount=0)
 

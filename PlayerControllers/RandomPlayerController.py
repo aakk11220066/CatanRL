@@ -84,9 +84,8 @@ class RandomPlayerController(PlayerController):
             }
         }
 
-    def build_settlement_and_road_round_2(self, observation: Tuple[Board, Dict[str, int]], collect_resources_around_settlement: ()):
+    def build_settlement_and_road_round_2(self, observation: Tuple[Board, Dict[str, int]]):
         desired_settlement = self.build_settlement_randomly(observation, start_of_game=True)
-        collect_resources_around_settlement(settlement_location=desired_settlement)
         valid_road_locations = observation[0].get_valid_road_locations(
             player=self.player_num,
             upcoming_settlement_location=desired_settlement

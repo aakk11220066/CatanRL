@@ -71,6 +71,7 @@ class CatanGame:
             #    if player._get_number_of_resources()>7:
             #        player.drop_half_cards()
             self.players[player_num - 1].move_thief(self.board)
+            time.sleep(self.function_delay)
         else:
             tiles = dict((k, v) for k, v in self.board.graph.nodes.items() if
                          k[0] == "tile" and v['tile_type'] != TileType.OCEAN)
