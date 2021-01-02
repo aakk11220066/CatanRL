@@ -19,20 +19,19 @@ prices = {
     "development_card": {"sheep": 1, "ore": 1, "wheat": 1}
 }
 
-def _on_land(board: Graph, position: Coordinate):
-
+def _on_land(board: Graph, position: PointCoordinate):
     return any(
         map(
             lambda neighbor_label: "tile_type" in board.nodes[neighbor_label]
                                    and board.nodes[neighbor_label]["tile_type"] != TileType.OCEAN,
-            board.neighbors(("point", position))
+            board.neighbors(position)
         )
     )
 
 
-def _settlement_location_available(board: Graph, position: Coordinate):
-    return board.has_node(("point", position)) \
-           and board.nodes[("point", position)]["building"] == BuildingTypes.Empty \
+def _settlement_location_available(board: Graph, position: PointCoordinate):
+    return board.has_node(position) \
+           and board.nodes[position]["building"] == BuildingTypes.Empty \
            and _on_land(board, position)
 
 
@@ -42,13 +41,14 @@ def _point_connected_to_road(board: Graph, position: PointCoordinate, player: in
                if "owner" in edge)
 
 
-def _settlement_far_from_neighbors(board: Graph, position: Coordinate):
+def _settlement_far_from_neighbors(board: Graph, position: PointCoordinate):
     return all(board.nodes[neighbor_index]["building"] == BuildingTypes.Empty
-               for neighbor_index in board.neighbors(("point", position))
+               for neighbor_index in board.neighbors(position)
                if "building" in board.nodes[neighbor_index])
 
 
-def is_valid_settlement_position(board: Graph, position: Coordinate, player: int, start_of_game: bool = False):
+def is_valid_settlement_position(board: Graph, position: PointCoordinate, player: int, start_of_game: bool = False):
+    assert(position[0] == "point")
     return _settlement_location_available(board, position) \
            and _settlement_far_from_neighbors(board, position) \
            and (_point_connected_to_road(board, position, player) or start_of_game)
@@ -84,4 +84,4 @@ def is_valid_road_position(
     point1, point2 = road
     return _edge_location_available(board, point1[1], point2[1]) \
            and _road_is_connected(board, (point1, point2), player, upcoming_settlement_location) \
-           and (_on_land(board, point1[1]) and _on_land(board, point2[1]))
+           and (_on_land(board, point1) and _on_land(board, point2))

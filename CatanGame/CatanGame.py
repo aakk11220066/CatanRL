@@ -27,7 +27,7 @@ class CatanGame:
         self.threshold_victory_points = threshold_victory_points
 
     def addSettlement(self, position: PointCoordinate, player_num: PlayerNumber, start_of_game: bool = False):
-        if not Building.is_valid_settlement_position(self.board.graph, position[1], player_num, start_of_game):
+        if not Building.is_valid_settlement_position(self.board.graph, position, player_num, start_of_game):
             raise Exceptions.InvalidSettlementPlacementException()
         self.players[player_num - 1].spend_resources(**Building.prices["settlement"])
 
@@ -77,7 +77,7 @@ class CatanGame:
             points = dict((k, v) for k, v in self.board.graph.nodes.items() if k[0] == "point")
             for tile in tiles.values():
                 if tile['number'] == dice:
-                    if tile['thief'] == True:
+                    if tile['thief']:
                         continue
                     for point_coordinates in Board.get_point_coordinates_around_tile(tile['position'],
                                                                                      actual_board_size=self.board.boardSize + 1):
@@ -97,7 +97,7 @@ class CatanGame:
 
     # ---- helper methods -----
 
-    def _collect_surrounding_resources(self, settlement_location: PointCoordinate):
+    def collect_surrounding_resources(self, settlement_location: PointCoordinate):
         player_num = self.board.graph.nodes[settlement_location]["owner"]
         # assert (player_num != Shared_Constants.NO_PLAYER)
         for tile_type in map(lambda tile_label: self.board.graph.nodes[tile_label]["tile_type"],
@@ -114,9 +114,9 @@ class CatanGame:
 
 
 # --------------------HELPER FUNCTIONS FOR PREPPING GAME------------------
-def _swapPositions(list, pos1, pos2):
-    list[pos1], list[pos2] = list[pos2], list[pos1]
-    return list
+def _swapPositions(_list, pos1, pos2):
+    _list[pos1], _list[pos2] = _list[pos2], _list[pos1]
+    return _list
 
 
 def makeOrderPlayerGame(num_of_players):
@@ -145,7 +145,7 @@ def enterParametersGame():
     while num_of_players < 2:
         num_of_players = int(input("Illegal number of players. Try again.\nHow many players are playing (2,3,4...)? "))
     num_of_bots = int(input("How many computer bots are playing? (from 0 to " + str(num_of_players) + "): "))
-    while not (num_of_players >= num_of_bots and num_of_bots >= 0):
+    while not (num_of_players >= num_of_bots >= 0):
         num_of_bots = int(input(
             "Illegal number of computer bots. Try again.\nHow many computer bots are playing? (from 0 to " + str(
                 num_of_players) + "): "))

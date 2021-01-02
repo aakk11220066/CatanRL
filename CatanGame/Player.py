@@ -98,8 +98,6 @@ class Player:
 
     def buildSettlementAndRoadRound2(self, game: CatanGame):
         self.buildSettlementAndRoadRound1(game)
-        # TODO: collect available_resources
-
 
     # purposely unimplemented, merely a placeholder function for future development
     def play_development_cards(self):  # ABSTRACT
@@ -112,7 +110,10 @@ class Player:
     def purchase_buildings_and_cards(self, game: CatanGame):
         for road in self.desired_shopping_list["roads"]:
             game.addRoad(road=road, player_num=self.player_num)
+            print (f"Player {self.player_num} built a road from {road[0][1]} to {road[1][1]}")
         for settlement in self.desired_shopping_list["settlements"]:
             game.addSettlement(position=settlement, player_num=self.player_num)
+            print(f"Player {self.player_num} built a settlement at {settlement[1]}")
         for city in self.desired_shopping_list["cities"]:
             game.addCity(position=city, player_num=self.player_num)
+            print(f"Player {self.player_num} built a city at {city[1]}")

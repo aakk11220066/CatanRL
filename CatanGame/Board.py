@@ -184,8 +184,8 @@ class Board:
     def get_valid_settlement_locations(self, player: PlayerNumber, start_of_game: bool = False) \
             -> Iterable[PointCoordinate]:
         return filter(
-            lambda node_label: is_valid_settlement_position(self.graph, node_label[1], player, start_of_game) and
-                               node_label[0] == "point",
+            lambda node_label: node_label[0] == "point" and
+                               is_valid_settlement_position(self.graph, node_label, player, start_of_game),
             self.graph.nodes
         )
 

@@ -16,7 +16,7 @@ class GameSupervisor:
     def __init__(self, gui: bool = True, board_size: int = 3, order_player_game: List[int] = [1,2,3],
                  function_delay = 0.1):
         self.gui = gui
-        if (gui):
+        if gui:
             board_size, order_player_game = GameHelperFunctions.enterParametersGame()
         self.board_size = board_size
         self.order_player_game = order_player_game
@@ -33,8 +33,9 @@ class GameSupervisor:
             GymInterface(player_num=player_num, game=self.game)
         )
 
-    def run_game(self):
+    def run_game(self, resource_boost_amount: int = 0):
         beginning_observation = self.reset()
+        self._boost_resources(amount=resource_boost_amount)
         done = False
 
         for controller, gym_interface in self.controllers:
@@ -45,19 +46,20 @@ class GameSupervisor:
         for controller, gym_interface in reversed(self.controllers):
             action = controller.buildSettlementAndRoadRound2(
                 observation=beginning_observation,
-                collect_resources_around_settlement=self.game._collect_surrounding_resources
+                collect_resources_around_settlement=self.game.collect_surrounding_resources
             )
             beginning_observation, reward, done, info = gym_interface.step(action=action)
             controller.log_reward(reward=reward)
 
         observation = beginning_observation
         for controller_pair in itertools.cycle(self.controllers):
-            if not done:
-                observation = self._play_turn(*controller_pair, observation=observation)
+            if done:
+                break
+            observation, done, info = self._play_turn(*controller_pair, observation=observation)
 
     def reset(self):
         self.game = CatanGame(board_size=self.board_size, order_player_game=self.order_player_game, function_delay=0.1)
-        if (self.gui):
+        if self.gui:
             GUI(self.game).start()
         for _, gym_interface in self.controllers:
             gym_interface.reset()
@@ -85,7 +87,7 @@ class GameSupervisor:
 
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
-        return observation
+        return observation, done, info
 
     def _boost_resources(self, amount: int = 10):
         """
@@ -102,7 +104,6 @@ class GameSupervisor:
 # DONE: add game + game_supervisor server that multiple gym environments attach to to allow for multiple RL agents
 # DONE: random player should engage with this server too
 if __name__ == "__main__":
-    supervisor = GameSupervisor(gui=True)
-    # supervisor._boost_resources(100000000000)
-    supervisor.run_game()
+    supervisor = GameSupervisor(gui=True) # player1=red, player2=yellow, player3=green
+    supervisor.run_game(resource_boost_amount=100000000)
 

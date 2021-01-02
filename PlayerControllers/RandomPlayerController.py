@@ -13,10 +13,11 @@ random.seed(Shared_Constants.RANDOM_SEED)
 class RandomPlayerController(PlayerController):
     def __init__(self, player_num: Shared_Constants.PlayerNumber):
         super(RandomPlayerController, self).__init__(player_num=player_num)
-    
+
     def get_desired_thief_location(self, observation: Tuple[Board, Dict[str, int]]):
         tiles = dict(
-            (k, v) for k, v in observation[0].graph.nodes.items() if k[0] == "tile" and v['tile_type'] != TileType.OCEAN)
+            (k, v) for k, v in observation[0].graph.nodes.items() if
+            k[0] == "tile" and v['tile_type'] != TileType.OCEAN)
         '''for tile in tiles.values():
             if tile['thief']:
                 pos = tile['position']
@@ -35,7 +36,7 @@ class RandomPlayerController(PlayerController):
         num_removed = self._get_number_of_resources() // 2
         for i in range(num_removed):
             d = dict((k, v) for k, v in self.available_resources.items() if v > 0)
-            self.available_resources[random.choice(list(d))] -= 1'''
+            self.available_resources[random.choice(_list(d))] -= 1'''
 
     def build_road_randomly(self,
                             observation: Tuple[Board, Dict[str, int]],
@@ -46,7 +47,7 @@ class RandomPlayerController(PlayerController):
         )
         try:
             return random.choice(list(valid_road_locations))
-        except(IndexError): # valid_road_locations is empty
+        except IndexError:  # valid_road_locations is empty
             return None
 
     def build_settlement_randomly(self, observation: Tuple[Board, Dict[str, int]], start_of_game=False):
@@ -54,25 +55,28 @@ class RandomPlayerController(PlayerController):
             player=self.player_num,
             start_of_game=start_of_game
         )
+        valid_settlement_locations = list(valid_settlement_locations)
         try:
             return random.choice(list(valid_settlement_locations))
-        except(IndexError): # valid_settlement_locations is empty
+        except IndexError:  # valid_settlement_locations is empty
+            # print(f"Player {self.player_num} could not find anywhere to build a settlement!")
             return None
 
     def build_city_randomly(self, observation: Tuple[Board, Dict[str, int]]):
         valid_city_locations = observation[0].get_valid_city_locations(player=self.player_num)
         try:
             return random.choice(list(valid_city_locations))
-        except(IndexError): # valid_city_locations is empty
+        except IndexError:  # valid_city_locations is empty
             return None
 
     def buy_development_card_randomly(self, observation: Tuple[Board, Dict[str, int]]):
-        print('Complete buyDevelopmentCardRandomly')
+        print('Decided to buy development card (not implemented yet)')
         return None
 
     def buildSettlementAndRoadRound1(self, observation: Tuple[Board, Dict[str, int]]):
         desired_settlement = self.build_settlement_randomly(observation=observation, start_of_game=True)
-        desired_road = self.build_road_randomly(observation=observation, upcoming_settlement_location=desired_settlement)
+        desired_road = self.build_road_randomly(observation=observation,
+                                                upcoming_settlement_location=desired_settlement)
         return {
             "action_type": Shared_Constants.ActionType.FIRST_BUILDING,
             'building_locations': {
@@ -81,7 +85,8 @@ class RandomPlayerController(PlayerController):
             }
         }
 
-    def buildSettlementAndRoadRound2(self, observation: Tuple[Board, Dict[str, int]], collect_resources_around_settlement: ()):
+    def buildSettlementAndRoadRound2(self, observation: Tuple[Board, Dict[str, int]],
+                                     collect_resources_around_settlement: ()):
         desired_settlement = self.build_settlement_randomly(observation, start_of_game=True)
         collect_resources_around_settlement(settlement_location=desired_settlement)
         valid_road_locations = observation[0].get_valid_road_locations(
@@ -90,8 +95,8 @@ class RandomPlayerController(PlayerController):
         )
         valid_road_locations = filter(
             lambda road_endpoints:
-                road_endpoints[0] == desired_settlement or
-                road_endpoints[1] == desired_settlement,
+            road_endpoints[0] == desired_settlement or
+            road_endpoints[1] == desired_settlement,
             valid_road_locations
         )
         desired_road = random.choice(list(valid_road_locations))
@@ -111,7 +116,6 @@ class RandomPlayerController(PlayerController):
     def get_desired_trade(self, observation):
         available_resources = observation[1].copy()
         desired_trades = []
-        trade_from_resource = None
         while True:
             trade_from_resource = random.choice(
                 list(filter(
@@ -144,19 +148,20 @@ class RandomPlayerController(PlayerController):
         while upcoming_purchase != "do_nothing":
             if upcoming_purchase == 'road':
                 potential_road_purchase = self.build_road_randomly(observation=observation)
-                if (potential_road_purchase):
+                if potential_road_purchase and potential_road_purchase not in purchased_roads:
                     purchased_roads.append(potential_road_purchase)
             elif upcoming_purchase == 'settlement':
                 potential_settlement_purchase = self.build_settlement_randomly(observation=observation)
-                if (potential_settlement_purchase):
+                if potential_settlement_purchase and potential_settlement_purchase not in purchased_settlements:
                     purchased_settlements.append(potential_settlement_purchase)
             elif upcoming_purchase == 'city':
                 potential_city_purchase = self.build_city_randomly(observation=observation)
-                if potential_city_purchase:
+                if potential_city_purchase and potential_city_purchase not in purchased_cities:
                     purchased_cities.append(potential_city_purchase)
             elif upcoming_purchase == 'development_card':
                 potential_development_card_purchase = self.buy_development_card_randomly(observation=observation)
-                if potential_development_card_purchase:
+                if potential_development_card_purchase and \
+                        potential_development_card_purchase not in purchased_development_cards:
                     purchased_development_cards.append(potential_development_card_purchase)
 
             for resource in Building.prices[upcoming_purchase]:
