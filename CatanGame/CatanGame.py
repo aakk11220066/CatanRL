@@ -90,7 +90,7 @@ class CatanGame:
     def end_game(self):
         for player in self.players:
             if player.victory_points >= self.threshold_victory_points:
-                print("The player ", player.player_num, " won the game with ", player.victory_points,
+                print("Player", player.player_num, "won the game with ", player.victory_points,
                       " victory points!")
                 return True
         return False

@@ -105,5 +105,5 @@ class GameSupervisor:
 # DONE: random player should engage with this server too
 if __name__ == "__main__":
     supervisor = GameSupervisor(gui=True) # player1=red, player2=yellow, player3=green
-    supervisor.run_game(resource_boost_amount=100000000)
+    supervisor.run_game(resource_boost_amount=0)
 
