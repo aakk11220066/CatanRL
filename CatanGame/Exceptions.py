@@ -17,5 +17,6 @@ class InvalidCityPlacementException(InvalidPlacementException):
 class InvalidRoadPlacementException(InvalidPlacementException):
     pass
 
+
 class InvalidActionException(Exception):
     pass

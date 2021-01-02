@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Tuple
 from networkx import Graph
 
 from Shared_Constants import NO_PLAYER, Coordinate, PointCoordinate, RoadPlacement, PlayerNumber
@@ -18,6 +17,7 @@ prices = {
     "road": {"wood": 1, "brick": 1},
     "development_card": {"sheep": 1, "ore": 1, "wheat": 1}
 }
+
 
 def _on_land(board: Graph, position: PointCoordinate):
     return any(
@@ -48,7 +48,7 @@ def _settlement_far_from_neighbors(board: Graph, position: PointCoordinate):
 
 
 def is_valid_settlement_position(board: Graph, position: PointCoordinate, player: int, start_of_game: bool = False):
-    assert(position[0] == "point")
+    assert (position[0] == "point")
     return _settlement_location_available(board, position) \
            and _settlement_far_from_neighbors(board, position) \
            and (_point_connected_to_road(board, position, player) or start_of_game)

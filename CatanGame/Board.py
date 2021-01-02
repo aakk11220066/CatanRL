@@ -153,7 +153,8 @@ Graph is undirected, of course.  Every tile is connected to all 6 points around 
 
 
 class Board:
-    def __init__(self, boardSize=3, thief_location: TileCoordinate = ("tile", (1, 1))):  # locate thief at random location?
+    def __init__(self, boardSize=3,
+                 thief_location: TileCoordinate = ("tile", (1, 1))):  # locate thief at random location?
         self.graph = _hexagonalBoard(boardSize)
         self.boardSize = boardSize
         self._add_thief(thief_location)

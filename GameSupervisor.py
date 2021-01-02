@@ -11,10 +11,11 @@ from GymInterface import GymInterface
 from PlayerControllers.PlayerController import PlayerController
 from PlayerControllers.RandomPlayerController import RandomPlayerController
 
+
 # DONE: divide files into folders, add README, add .gitignore
 class GameSupervisor:
-    def __init__(self, gui: bool = True, board_size: int = 3, order_player_game: List[int] = [1,2,3],
-                 function_delay = 0.1):
+    def __init__(self, gui: bool = True, board_size: int = 3, order_player_game: List[int] = [1, 2, 3],
+                 function_delay=0.1):
         self.gui = gui
         if gui:
             board_size, order_player_game = GameHelperFunctions.enter_parameters_game()
@@ -73,7 +74,7 @@ class GameSupervisor:
         print('@@@@@@@@@@@@@@@@@@@@ Player', controller.player_num, 'play @@@@@@@@@@@@@@@@@@@@')
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 
-        #self.game.players[player - 1].play_development_cards()  # Future implemention
+        # self.game.players[player - 1].play_development_cards()  # Future implemention
 
         action = controller.get_desired_thief_location(observation=observation)
         observation, reward, done, info = gym_interface.step(action)
@@ -106,6 +107,5 @@ class GameSupervisor:
 # DONE: add game + game_supervisor server that multiple gym environments attach to to allow for multiple RL agents
 # DONE: random player should engage with this server too
 if __name__ == "__main__":
-    supervisor = GameSupervisor(gui=True, function_delay=0.5) # player1=red, player2=yellow, player3=green
+    supervisor = GameSupervisor(gui=True, function_delay=0.5)  # player1=red, player2=yellow, player3=green
     supervisor.run_game(resource_boost_amount=0)
-

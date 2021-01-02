@@ -17,7 +17,7 @@ class Player:
         self.desired_beginning_settlement_and_road_location: Tuple[PointCoordinate, RoadPlacement] = None
         self.desired_thief_location: TileCoordinate = None
         self.desired_shopping_list: Dict[Resource, List[Union[RoadPlacement, PointCoordinate]]] = None
-        self.desired_trades_list: List[Tuple[Resource, Resource]] = None # List of trade_from, trade_to
+        self.desired_trades_list: List[Tuple[Resource, Resource]] = None  # List of trade_from, trade_to
 
     def spend_resources(self, sheep=0, wheat=0, wood=0, brick=0, ore=0):
         if self.resources["sheep"] < sheep \
@@ -32,31 +32,31 @@ class Player:
         self.resources["wood"] -= wood
         self.resources["brick"] -= brick
         self.resources["ore"] -= ore
-    
+
     def valid_buy_road(self, game: CatanGame):
         valid_road_locations = game.board.get_valid_road_locations(player=self.player_num)
-        if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
-            bool(list(valid_road_locations)):
+        if self.resources["wood"] >= 1 and self.resources["brick"] >= 1 and \
+                bool(list(valid_road_locations)):
             return True
         return False
-    
+
     def valid_buy_settlement(self, game: CatanGame):
         valid_settlement_locations = game.board.get_valid_settlement_locations(player=self.player_num)
-        if self.resources["wood"]>=1 and self.resources["brick"]>=1 and \
-            self.resources["sheep"]>=1 and self.resources["wheat"]>=1 and \
+        if self.resources["wood"] >= 1 and self.resources["brick"] >= 1 and \
+                self.resources["sheep"] >= 1 and self.resources["wheat"] >= 1 and \
                 bool(list(valid_settlement_locations)):
             return True
         return False
 
     def valid_buy_city(self, game: CatanGame):
         valid_city_locations = game.board.get_valid_city_locations(player=self.player_num)
-        if self.resources["wheat"]>=2 and self.resources["ore"]>=3 and \
-            bool(list(valid_city_locations)):
+        if self.resources["wheat"] >= 2 and self.resources["ore"] >= 3 and \
+                bool(list(valid_city_locations)):
             return True
         return False
 
     def valid_buy_development_card(self):
-        if self.resources["sheep"]>=1 and self.resources["wheat"]>=1 and self.resources["ore"]>=1:
+        if self.resources["sheep"] >= 1 and self.resources["wheat"] >= 1 and self.resources["ore"] >= 1:
             return True
         return False
 
@@ -107,7 +107,7 @@ class Player:
     def purchase_buildings_and_cards(self, game: CatanGame):
         for road in self.desired_shopping_list["roads"]:
             game.add_road(road=road, player_num=self.player_num)
-            print (f"Player {self.player_num} built a road from {road[0][1]} to {road[1][1]}")
+            print(f"Player {self.player_num} built a road from {road[0][1]} to {road[1][1]}")
         for settlement in self.desired_shopping_list["settlements"]:
             game.add_settlement(position=settlement, player_num=self.player_num)
             print(f"Player {self.player_num} built a settlement at {settlement[1]}")

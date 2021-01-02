@@ -21,18 +21,19 @@ class TileType(Enum):
     DESERT = 5
     OCEAN = 6
 
+
 def tiletype_to_resourcetype(tiletype: TileType):
-    if tiletype==TileType.FOREST:
+    if tiletype == TileType.FOREST:
         return "wood"
-    if tiletype==TileType.FIELDS:
+    if tiletype == TileType.FIELDS:
         return "wheat"
-    if tiletype==TileType.PASTURE:
+    if tiletype == TileType.PASTURE:
         return "sheep"
-    if tiletype==TileType.MOUNTAINS:
+    if tiletype == TileType.MOUNTAINS:
         return "ore"
-    if tiletype==TileType.HILLS:
+    if tiletype == TileType.HILLS:
         return "brick"
-    if tiletype==TileType.DESERT or tiletype==TileType.OCEAN:
+    if tiletype == TileType.DESERT or tiletype == TileType.OCEAN:
         return None
 
 
@@ -55,21 +56,22 @@ def get_tile_set(board_size: int, rowWidths: List[int]) -> Dict[TileType, int]:
 
     return result
 
+
 # returns how many numbers (dice rolls) of each type to add to the board
 def get_tile_number_set(board_size: int, rowWidths: List[int]) -> Dict[int, int]:
     num_tile_numbers = sum(rowWidths) - NUM_DESERTS - NUM_HEXAGON_SIDES * board_size
     result = dict()
     for i in range(12):
-        result[i+1] = 0
+        result[i + 1] = 0
     for _ in range(num_tile_numbers):
         roll1 = random.randint(1, 6)
         roll2 = random.randint(1, 6)
-        while roll1+roll2 == 7:
-            roll1 = random.randint(1,6)
-            roll2 = random.randint(1,6)
+        while roll1 + roll2 == 7:
+            roll1 = random.randint(1, 6)
+            roll2 = random.randint(1, 6)
         result[roll1 + roll2] += 1
     for i in range(12):
-        if result[i+1] == 0:
-            del result[i+1]
+        if result[i + 1] == 0:
+            del result[i + 1]
 
     return result

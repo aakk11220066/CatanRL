@@ -4,7 +4,6 @@ import random
 import CatanGame.Board as Board
 import CatanGame.Building as Building
 from CatanGame import Exceptions
-import Shared_Constants
 from Shared_Constants import RoadPlacement, PointCoordinate, PlayerNumber
 from CatanGame.Player import Player
 from Shared_Constants import NO_PLAYER
@@ -80,8 +79,9 @@ class CatanGame:
                 if tile['number'] == dice:
                     if tile['thief']:
                         continue
-                    for point_coordinates in Board.get_point_coordinates_around_tile(tile['position'],
-                                                                                     actual_board_size=self.board.boardSize + 1):
+                    for point_coordinates in Board.get_point_coordinates_around_tile(
+                            tile['position'],
+                            actual_board_size=self.board.boardSize + 1):
                         num_player = points[('point', point_coordinates)]['owner']
                         if num_player > 0:
                             resource_type = tiletype_to_resourcetype(tile['tile_type'])

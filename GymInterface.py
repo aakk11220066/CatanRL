@@ -1,5 +1,5 @@
 import sys  # FIXME: DELETE ME
-from typing import Tuple, Dict, List
+from typing import Dict
 
 sys.path.append("C:\ProgramData\Miniconda3\Lib\site-packages")  # FIXME: DELETE ME
 import gym
