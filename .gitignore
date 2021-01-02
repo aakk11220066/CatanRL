@@ -1,3 +1,5 @@
 /.vscode/
 /bash.exe.stackdump
 /__pychache__/
+/PlayerControllers/__pycache__/
+/CatanGame/__pycache__/
