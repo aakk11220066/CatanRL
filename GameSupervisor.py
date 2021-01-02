@@ -17,7 +17,7 @@ class GameSupervisor:
                  function_delay = 0.1):
         self.gui = gui
         if (gui):
-            board_size, order_player_game = GameHelperFunctions.enterParametersGame()
+            board_size, order_player_game = GameHelperFunctions.enter_parameters_game()
         self.board_size = board_size
         self.order_player_game = order_player_game
         self.game = CatanGame(board_size=board_size, order_player_game=order_player_game, function_delay=function_delay)
@@ -38,12 +38,12 @@ class GameSupervisor:
         done = False
 
         for controller, gym_interface in self.controllers:
-            action = controller.buildSettlementAndRoadRound1(observation=beginning_observation)
+            action = controller.build_settlement_and_road_round_1(observation=beginning_observation)
             beginning_observation, reward, done, info = gym_interface.step(action=action)
             controller.log_reward(reward=reward)
 
         for controller, gym_interface in reversed(self.controllers):
-            action = controller.buildSettlementAndRoadRound2(
+            action = controller.build_settlement_and_road_round_2(
                 observation=beginning_observation,
                 collect_resources_around_settlement=self.game._collect_surrounding_resources
             )

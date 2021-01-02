@@ -26,7 +26,7 @@ class CatanGame:
         self.function_delay = function_delay
         self.threshold_victory_points = threshold_victory_points
 
-    def addSettlement(self, position: PointCoordinate, player_num: PlayerNumber, start_of_game: bool = False):
+    def add_settlement(self, position: PointCoordinate, player_num: PlayerNumber, start_of_game: bool = False):
         if not Building.is_valid_settlement_position(self.board.graph, position[1], player_num, start_of_game):
             raise Exceptions.InvalidSettlementPlacementException()
         self.players[player_num - 1].spend_resources(**Building.prices["settlement"])
@@ -37,7 +37,7 @@ class CatanGame:
 
         time.sleep(self.function_delay)
 
-    def addCity(self, position: PointCoordinate, player_num: PlayerNumber):
+    def add_city(self, position: PointCoordinate, player_num: PlayerNumber):
         if not Building.is_valid_city_position(self.board.graph, position[1], player_num):
             raise Exceptions.InvalidCityPlacementException()
         self.players[player_num - 1].spend_resources(**Building.prices["city"])
@@ -48,7 +48,7 @@ class CatanGame:
 
         time.sleep(self.function_delay)
 
-    def addRoad(self, road: RoadPlacement, player_num: PlayerNumber):
+    def add_road(self, road: RoadPlacement, player_num: PlayerNumber):
         point1, point2 = road
 
         if not Building.is_valid_road_position(board=self.board.graph, road=road, player=player_num):
@@ -63,13 +63,13 @@ class CatanGame:
 
         time.sleep(self.function_delay)
 
-    def rollDice(self, player_num: PlayerNumber):
+    def roll_dice(self, player_num: PlayerNumber):
         dice = random.randint(1, 6) + random.randint(1, 6)
         print("Dice: ", dice)
         if dice == 7:
             # for player in self.players:
             #    if player._get_number_of_resources()>7:
-            #        player.dropHalfCards()
+            #        player.drop_half_cards()
             self.players[player_num - 1].move_thief(self.board)
         else:
             tiles = dict((k, v) for k, v in self.board.graph.nodes.items() if
@@ -87,7 +87,7 @@ class CatanGame:
                             self.players[num_player - 1].resources[resource_type] += 1
                             print("Player:", num_player, "-> Resource:", resource_type)
 
-    def endGame(self):
+    def end_game(self):
         for player in self.players:
             if player.victory_points >= self.threshold_victory_points:
                 print("The player ", player.player_num, " won the game with ", player.victory_points,
@@ -114,12 +114,12 @@ class CatanGame:
 
 
 # --------------------HELPER FUNCTIONS FOR PREPPING GAME------------------
-def _swapPositions(list, pos1, pos2):
+def _swap_positions(list, pos1, pos2):
     list[pos1], list[pos2] = list[pos2], list[pos1]
     return list
 
 
-def makeOrderPlayerGame(num_of_players):
+def make_order_player_game(num_of_players):
     players = [x + 1 for x in list(range(num_of_players))]
     '''len = num_of_players
     order_player_game = []
@@ -129,13 +129,13 @@ def makeOrderPlayerGame(num_of_players):
             order_player_game.append((player, "HUMAN"))
         else:
             order_player_game.append((player, "BOT"))
-        _swapPositions(players, player - 1, len - 1)
+        _swap_positions(players, player - 1, len - 1)
         len -= 1
     return order_player_game'''
     return players
 
 
-def enterParametersGame():
+def enter_parameters_game():
     # Defined board size (scale)
     board_size = int(input("Please select the game board size (2,3,4...): "))
     while board_size < 2:
@@ -149,7 +149,7 @@ def enterParametersGame():
         num_of_bots = int(input(
             "Illegal number of computer bots. Try again.\nHow many computer bots are playing? (from 0 to " + str(
                 num_of_players) + "): "))
-    order_player_game = makeOrderPlayerGame(num_of_players)
+    order_player_game = make_order_player_game(num_of_players)
     print(
         "The game contains " + str(num_of_players - num_of_bots) + " human players and " + str(num_of_bots) + " bots!")
     print("The order game playing: ")

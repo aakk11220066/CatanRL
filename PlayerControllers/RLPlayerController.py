@@ -7,13 +7,13 @@ class RLPlayerController(PlayerController):
     def get_desired_thief_location(self, observation):
         raise NotImplementedError()
 
-    def dropHalfCards(self, observation):
+    def drop_half_cards(self, observation):
         raise NotImplementedError() # TODO
 
-    def buildSettlementAndRoadRound1(self, observation):
+    def build_settlement_and_road_round_1(self, observation):
         raise NotImplementedError()
 
-    def buildSettlementAndRoadRound2(self, observation):
+    def build_settlement_and_road_round_2(self, observation):
         raise NotImplementedError()
 
     def buy_road_or_settlement_or_city_or_development_card(self, observation):

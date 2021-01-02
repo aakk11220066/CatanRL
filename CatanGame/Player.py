@@ -79,7 +79,7 @@ class Player:
     def _get_number_of_resources(self):
         return sum(list(self.resources.values()))
 
-    def dropHalfCards(self):
+    def drop_half_cards(self):
         raise NotImplementedError()
 
     def trade_resources(self):
@@ -88,16 +88,16 @@ class Player:
             self.resources[trade[1]] += 1
             print(f'Player {self.player_num} traded {BANK_TRADE_PRICE} {trade[0]} for 1 {trade[1]}')
 
-    def buildSettlementAndRoadRound1(self, game: CatanGame):
-        game.addSettlement(
+    def build_settlement_and_road_round_1(self, game: CatanGame):
+        game.add_settlement(
             position=self.desired_beginning_settlement_and_road_location[0],
             player_num=self.player_num,
             start_of_game=True
         )
-        game.addRoad(road=self.desired_beginning_settlement_and_road_location[1], player_num=self.player_num)
+        game.add_road(road=self.desired_beginning_settlement_and_road_location[1], player_num=self.player_num)
 
-    def buildSettlementAndRoadRound2(self, game: CatanGame):
-        self.buildSettlementAndRoadRound1(game)
+    def build_settlement_and_road_round_2(self, game: CatanGame):
+        self.build_settlement_and_road_round_1(game)
         # TODO: collect available_resources
 
 
@@ -111,8 +111,8 @@ class Player:
 
     def purchase_buildings_and_cards(self, game: CatanGame):
         for road in self.desired_shopping_list["roads"]:
-            game.addRoad(road=road, player_num=self.player_num)
+            game.add_road(road=road, player_num=self.player_num)
         for settlement in self.desired_shopping_list["settlements"]:
-            game.addSettlement(position=settlement, player_num=self.player_num)
+            game.add_settlement(position=settlement, player_num=self.player_num)
         for city in self.desired_shopping_list["cities"]:
-            game.addCity(position=city, player_num=self.player_num)
+            game.add_city(position=city, player_num=self.player_num)
