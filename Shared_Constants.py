@@ -4,6 +4,7 @@ from enum import Enum
 RANDOM_SEED = 42
 NO_PLAYER = -1
 BANK_TRADE_PRICE = 4
+REPLAY_MEM_SIZE = 200000
 
 Coordinate = Tuple[int, int]
 TileCoordinate = Tuple[str, Coordinate]
