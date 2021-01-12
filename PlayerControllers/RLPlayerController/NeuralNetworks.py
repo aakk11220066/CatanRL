@@ -63,10 +63,11 @@ class BoardTranslater(nn.Module):
         self.GCN_modules = []
         self.FC_modules = []
 
-        #GCNConv+pooling+batchnorm layers
+        #GCNConv+pooling+batchnorm+relu layers
         in_channels =
         for GCN_layer_channels in GCN_hidden_channels:
             self.GCN_modules.append(tgnn.GCNConv(in_channels=in_channels, out_channels=GCN_layer_channels))
+            self.GCN_modules.append(nn.ReLU())
             self.GCN_modules.append(tgnn.BatchNorm(in_channels=GCN_layer_channels))
             in_channels = GCN_layer_channels
 
@@ -88,6 +89,13 @@ class BoardTranslater(nn.Module):
             :return: representation of board understandable by Q_net
             """
             result = board.graph.
-            for layer in self.modules:
+            data = to_data(result)# TODO: convert board to torch_geometric.Data
+            for layer_num in range(start=0, stop=len(self.GCN_modules), step=3):
+                result, edge_index, edge_weights = data.x, data.edge_index, data.edge_weights
+                result = self.GCN_modules[layer_num](result, edge_index, edge_weights)
+                result = self.GCN_modules[layer_num + 1](result)
+                result = self.GCN_modules[layer_num + 2](result)
+
+            for layer in self.FC_modules:
                 result = layer(result)
             return result
