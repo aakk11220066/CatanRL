@@ -3,8 +3,8 @@ from CatanGame import Tile
 from CatanGame.Building import BuildingTypes
 from CatanGame.Building import is_valid_settlement_position, is_valid_road_position
 from CatanGame.Tile import TileType
-from Shared_Constants import RANDOM_SEED, NO_PLAYER
-from Shared_Constants import Coordinate, TileCoordinate, PlayerNumber, PointCoordinate, RoadPlacement
+from CatanGame.Shared_Constants import RANDOM_SEED, NO_PLAYER
+from CatanGame.Shared_Constants import Coordinate, TileCoordinate, PlayerNumber, PointCoordinate, RoadPlacement
 from typing import List, Iterable
 from random import choice
 import random
@@ -208,6 +208,14 @@ class Board:
                                    upcoming_settlement_location=upcoming_settlement_location),
             self.graph.edges
         )
+
+    def get_valid_thief_locations(self):
+        locations = dict(
+            (k, v) for k, v in self.graph.nodes.items() if
+            k[0] == "tile" and v['tile_type'] != TileType.OCEAN)
+        pos = self.thief_location
+        del locations[pos]
+        return locations
 
     def get_surrounding_tiles(self, settlement_location: PointCoordinate):
         return filter(

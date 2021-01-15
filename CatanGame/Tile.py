@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Dict, List
 import random
 
-from Shared_Constants import RANDOM_SEED
+from CatanGame.Shared_Constants import RANDOM_SEED
 
 NUM_HEXAGON_SIDES = 6
 NUM_DESERTS = 1

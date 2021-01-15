@@ -2,6 +2,7 @@
 # import matplotlib.pyplot as plt
 # import random
 import itertools
+from copy import copy, deepcopy
 from typing import List, Tuple
 
 from CatanGame.CatanGame import CatanGame
@@ -40,15 +41,28 @@ class GameSupervisor:
         self._boost_resources(amount=resource_boost_amount)
         done = False
 
+        old_observation = None
         for controller, gym_interface in self.controllers:
+            old_observation = deepcopy(beginning_observation)
             action = controller.build_settlement_and_road_round_1(observation=beginning_observation)
             beginning_observation, reward, done, info = gym_interface.step(action=action)
-            controller.log_reward(reward=reward)
+            controller.log_transition(
+                observation=old_observation,
+                action=action,
+                reward=reward,
+                next_observation=beginning_observation
+            )
 
         for controller, gym_interface in reversed(self.controllers):
+            old_observation=deepcopy(beginning_observation)
             action = controller.build_settlement_and_road_round_2(observation=beginning_observation)
             beginning_observation, reward, done, info = gym_interface.step(action=action)
-            controller.log_reward(reward=reward)
+            controller.log_transition(
+                observation=old_observation,
+                action=action,
+                reward=reward,
+                next_observation=beginning_observation
+            )
 
         observation = beginning_observation
         for controller_pair in itertools.cycle(self.controllers):
@@ -76,17 +90,35 @@ class GameSupervisor:
 
         # self.game.players[player - 1].play_development_cards()  # Future implemention
 
+        old_observation = deepcopy(observation)
         action = controller.get_desired_thief_location(observation=observation)
         observation, reward, done, info = gym_interface.step(action)
-        controller.log_reward(reward=reward)
+        controller.log_transition(
+            observation=old_observation,
+            action=action,
+            reward=reward,
+            next_observation=observation
+        )
 
+        old_observation = deepcopy(observation)
         action = controller.get_desired_trade(observation=observation)
         observation, reward, done, info = gym_interface.step(action)
-        controller.log_reward(reward=reward)
+        controller.log_transition(
+            observation=old_observation,
+            action=action,
+            reward=reward,
+            next_observation=observation
+        )
 
+        old_observation = deepcopy(observation)
         action = controller.purchase_buildings_and_cards(observation=observation)
         observation, reward, done, info = gym_interface.step(action=action)
-        controller.log_reward(reward=reward)
+        controller.log_transition(
+            observation=old_observation,
+            action=action,
+            reward=reward,
+            next_observation=observation
+        )
 
         print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
 

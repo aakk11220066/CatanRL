@@ -1,7 +1,7 @@
 from enum import Enum
 from networkx import Graph
 
-from Shared_Constants import NO_PLAYER, Coordinate, PointCoordinate, RoadPlacement, PlayerNumber
+from CatanGame.Shared_Constants import NO_PLAYER, Coordinate, PointCoordinate, RoadPlacement, PlayerNumber
 from CatanGame.Tile import TileType
 
 

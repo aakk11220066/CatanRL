@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
-from Shared_Constants import PlayerNumber
+from CatanGame.Shared_Constants import PlayerNumber
 from CatanGame.Building import prices
 Action = Dict
 
@@ -38,5 +38,5 @@ class PlayerController(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    def log_reward(self, reward: int):
+    def log_transition(self, observation, action: Action, reward: int, next_observation):
         raise NotImplementedError()

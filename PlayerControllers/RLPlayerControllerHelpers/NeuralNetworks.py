@@ -1,27 +1,26 @@
 from typing import List
 import torch.nn as nn
 import torch_geometric.nn as tgnn
-from math import inf as infinity
 
 from CatanGame.Board import Board
 
 
-class ThiefLocationTranslater(nn.Module):
-    def __init__(self, proposed_thief_loc_dim: int,
+class ActionTranslater(nn.Module):
+    def __init__(self, in_dim: int,
                  hidden_dims: List[int],
-                 thief_loc_representation_dim: int,
+                 representation_dim: int,
                  dropout: int = 0):
         """
-        Translates a batch of possible new thief locations to a latent representation understandable by main Q-net.
+        Translates an action to a latent representation understandable by main Q-net.
         Implementation: Multi layer perceptron
-        :param proposed_thief_loc_dim: dimension of input representation of new thief location
+        :param in_dim: dimension of input representation of action
         :param hidden_dims: list of internal hidden layer dimensions
-        :param thief_loc_representation_dim: dimension of output representation of new thief location
+        :param representation_dim: dimension of output representation of action
         :param dropout: probability of performing dropout.  0 for no dropout
         """
         super().__init__()
         self.modules = []
-        in_dim = proposed_thief_loc_dim
+        in_dim = in_dim
         for layer_dim in hidden_dims:
             self.modules.append(nn.Sequential(
                 nn.Linear(in_features=in_dim, out_features=layer_dim),
@@ -29,21 +28,27 @@ class ThiefLocationTranslater(nn.Module):
                 nn.Dropout(p=dropout)
             ))
             in_dim = layer_dim
-        self.modules.append(nn.Linear(in_features=in_dim, out_features=thief_loc_representation_dim))
+        self.modules.append(nn.Linear(in_features=in_dim, out_features=representation_dim))
 
-        def forward(proposed_thief_movements):
+        def forward(action):
             """
-            :param proposed_thief_movements: batch of possible movements.  Shape=(N, inD) where N is the size of batch
-                and inD is proposed_thief_loc_dim given in __init__
-            :return: batch of representations of proposed thief movements.  Shape=(N, outD) where N is the size of batch
-                and outD is board_representation_dim given in __init__
+            :param action: Action to evaluate.  Shape=(inD,) where inD is in_dim given in __init__
+            :return: representation of action.  Shape=(outD,) where outD is representation_dim given in __init__
             """
+            assert self.modules
             for layer in self.modules:
-                result = layer(proposed_thief_movements)
+                result = layer(action)
             return result
 
         def backward(grad):
             raise NotImplementedError() # TODO: implement
+
+
+
+class Q_net(ActionTranslater):
+    def __init__(self, in_dim: int, hidden_dims: List[int]):
+        super().__init__(in_dim, hidden_dims, 1)
+
 
 class BoardTranslater(nn.Module):
     def __init__(self,

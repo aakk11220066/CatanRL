@@ -4,9 +4,9 @@ import random
 import CatanGame.Board as Board
 import CatanGame.Building as Building
 from CatanGame import Exceptions
-from Shared_Constants import RoadPlacement, PointCoordinate, PlayerNumber
+from CatanGame.Shared_Constants import RoadPlacement, PointCoordinate, PlayerNumber
 from CatanGame.Player import Player
-from Shared_Constants import NO_PLAYER
+from CatanGame.Shared_Constants import NO_PLAYER
 from CatanGame.Tile import tiletype_to_resourcetype, TileType
 
 

@@ -4,7 +4,7 @@ import CatanGame.Board as Board
 import CatanGame.Building as Building
 from CatanGame.Tile import TileType
 from CatanGame.CatanGame import CatanGame
-from Shared_Constants import Coordinate
+from CatanGame.Shared_Constants import Coordinate
 
 # presets
 HEX_WIDTH = 80

@@ -3,7 +3,7 @@ from typing import Dict, Union, List, Tuple
 from CatanGame import Exceptions
 import CatanGame.Board as Board
 import CatanGame
-from Shared_Constants import TileCoordinate, PointCoordinate, RoadPlacement, Resource, PlayerNumber, BANK_TRADE_PRICE
+from CatanGame.Shared_Constants import TileCoordinate, PointCoordinate, RoadPlacement, Resource, PlayerNumber, BANK_TRADE_PRICE
 
 
 class Player:
