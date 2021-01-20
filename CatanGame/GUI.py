@@ -1,4 +1,5 @@
 import pygame
+from pygame.locals import *
 
 import CatanGame.Board as Board
 import CatanGame.Building as Building
@@ -40,19 +41,43 @@ tileColors = {
 
 game: CatanGame  # redefined to CatanGame type in make_graphical function
 
+def build_polygon_image(board, color,topLeftCorner: Coordinate):
+    image=None
+    if( color==tileColors[TileType.FOREST] ):
+        image  = pygame.image.load('./CatanGame/images/FOREST.png')
+    elif( color==tileColors[TileType.HILLS] ):
+        image = pygame.image.load('./CatanGame/images/HILLS.png')
+    elif( color==tileColors[TileType.MOUNTAINS] ):
+        image = pygame.image.load('./CatanGame/images/MOUNTAINS.png')
+    elif( color==tileColors[TileType.PASTURE] ):
+        image = pygame.image.load('./CatanGame/images/PASTURE.png')
+    elif( color==tileColors[TileType.DESERT] ):
+        image = pygame.image.load('./CatanGame/images/DESERT.png')
+    elif( color==tileColors[TileType.FIELDS] ):
+        image = pygame.image.load('./CatanGame/images/FIELDS.png')
+    elif( color==tileColors[TileType.OCEAN] ):
+        image = pygame.image.load('./CatanGame/images/OCEAN.png')
+    assert(image is not None)
+    imagex = topLeftCorner[0]-4
+    imagey = topLeftCorner[1]
+
+    board.blit(pygame.transform.scale(image, (HEX_WIDTH+8, HEX_HEIGHT)), (imagex, imagey))
+    
 
 # topLeft is the coordinate of the top left corner of the bounding box
 def add_hexagon(board, color, topLeftCorner: Coordinate):
-    pygame.draw.polygon(board, color,
-                        (
-                            (topLeftCorner[0] + 0, topLeftCorner[1] + HEX_HEIGHT / 4),
-                            (topLeftCorner[0] + 0, topLeftCorner[1] + 3 * HEX_HEIGHT / 4),
-                            (topLeftCorner[0] + HEX_WIDTH / 2, topLeftCorner[1] + HEX_HEIGHT),
-                            (topLeftCorner[0] + HEX_WIDTH, topLeftCorner[1] + 3 * HEX_HEIGHT / 4),
-                            (topLeftCorner[0] + HEX_WIDTH, topLeftCorner[1] + HEX_HEIGHT / 4),
-                            (topLeftCorner[0] + HEX_WIDTH / 2, topLeftCorner[1] + 0)
-                        )
-                        )
+    # pygame.draw.polygon(board, color,
+    #                     (
+    #                         (topLeftCorner[0] + 0, topLeftCorner[1] + HEX_HEIGHT / 4),
+    #                         (topLeftCorner[0] + 0, topLeftCorner[1] + 3 * HEX_HEIGHT / 4),
+    #                         (topLeftCorner[0] + HEX_WIDTH / 2, topLeftCorner[1] + HEX_HEIGHT),
+    #                         (topLeftCorner[0] + HEX_WIDTH, topLeftCorner[1] + 3 * HEX_HEIGHT / 4),
+    #                         (topLeftCorner[0] + HEX_WIDTH, topLeftCorner[1] + HEX_HEIGHT / 4),
+    #                         (topLeftCorner[0] + HEX_WIDTH / 2, topLeftCorner[1] + 0)
+    #                     )
+    #                     )
+    build_polygon_image(board, color,topLeftCorner)
+
     pygame.draw.polygon(
         board,
         DARK_GRAY,
