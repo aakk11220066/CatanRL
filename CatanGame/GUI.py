@@ -58,10 +58,10 @@ def build_polygon_image(board, color,topLeftCorner: Coordinate):
     elif( color==tileColors[TileType.OCEAN] ):
         image = pygame.image.load('./CatanGame/images/OCEAN.png')
     assert(image is not None)
-    imagex = topLeftCorner[0]-4
+    imagex = topLeftCorner[0]-5
     imagey = topLeftCorner[1]
 
-    board.blit(pygame.transform.scale(image, (HEX_WIDTH+8, HEX_HEIGHT)), (imagex, imagey))
+    board.blit(pygame.transform.scale(image, (HEX_WIDTH+10, HEX_HEIGHT)), (imagex, imagey))
     
 
 # topLeft is the coordinate of the top left corner of the bounding box
