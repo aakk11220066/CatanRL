@@ -67,7 +67,7 @@ class BoardTranslator(nn.Module):
         self.FC_modules = []
 
         #GCNConv+pooling+batchnorm+relu layers
-        in_channels = # TODO: calculate the output size from the Flatten module
+        in_channels = 1 # TODO: calculate?
         for GCN_layer_channels in GCN_hidden_channels:
             self.GCN_modules.append(tgnn.GCNConv(in_channels=in_channels, out_channels=GCN_layer_channels))
             self.GCN_modules.append(nn.ReLU())
@@ -76,7 +76,7 @@ class BoardTranslator(nn.Module):
 
         # FC layers
         self.FC_modules.append(nn.Flatten())
-        in_dim =  # TODO: calculate the output size from the Flatten module
+        in_dim = in_channels*(19+14+18+11) # TODO: calculate the output size from the Flatten module
         for FC_layer_dim in perceptron_hidden_dims:
             self.FC_modules.append(nn.Sequential(
                 nn.Linear(in_features=in_dim, out_features=FC_layer_dim),
