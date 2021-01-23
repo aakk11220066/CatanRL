@@ -1,10 +1,11 @@
+import itertools
 import random
 from typing import Tuple, Dict
 
 from CatanGame import Building, Shared_Constants
 from CatanGame.Board import Board
 from PlayerControllers.PlayerController import PlayerController
-from CatanGame.Tile import TileType
+from PlayerControllers.RLPlayerControllerHelpers.Shared_Constants import ActionType
 
 random.seed(Shared_Constants.RANDOM_SEED)
 
@@ -49,7 +50,8 @@ class RandomPlayerController(PlayerController):
         except IndexError:  # valid_city_locations is empty
             return None
 
-    def _buy_development_card_randomly(self, observation: Tuple[Board, Dict[str, int]]):
+    @staticmethod
+    def _buy_development_card_randomly(observation: Tuple[Board, Dict[str, int]]):
         print('Decided to buy development card (not implemented yet)')
         return None
 
@@ -57,7 +59,7 @@ class RandomPlayerController(PlayerController):
         tiles = observation[0].get_valid_thief_locations()
         thief_new_position = ("tile", random.choice(list(tiles.values()))['position'])
         return {
-            'action_type': Shared_Constants.ActionType.THIEF_PLACEMENT,
+            'action_type': ActionType.THIEF_PLACEMENT,
             'desired_thief_location': thief_new_position
         }
 
@@ -66,7 +68,7 @@ class RandomPlayerController(PlayerController):
         desired_road = self._build_road_randomly(observation=observation,
                                                  upcoming_settlement_location=desired_settlement)
         return {
-            "action_type": Shared_Constants.ActionType.FIRST_BUILDING,
+            "action_type": ActionType.FIRST_BUILDING,
             'building_locations': {
                 "settlement": desired_settlement,
                 "road": desired_road
@@ -87,7 +89,7 @@ class RandomPlayerController(PlayerController):
         )
         desired_road = random.choice(list(valid_road_locations))
         return {
-            "action_type": Shared_Constants.ActionType.SECOND_BUILDING,
+            "action_type": ActionType.SECOND_BUILDING,
             'building_locations': {
                 "settlement": desired_settlement,
                 "road": desired_road
@@ -104,13 +106,9 @@ class RandomPlayerController(PlayerController):
         available_resources = observation[1].copy()
         desired_trades = []
         while True:
-            trade_from_resource = random.choice(
-                list(filter(
-                    lambda resource: available_resources[resource] >= Shared_Constants.BANK_TRADE_PRICE,
-                    available_resources
-                )) + ["do_nothing"]
-            )
-            trade_to_resource = random.choice(list(observation[1].keys()))
+            valid_trades = self._get_valid_trades(available_resources=available_resources)
+            valid_trades = list(itertools.product(*valid_trades))
+            trade_from_resource, trade_to_resource = random.choice(valid_trades)
             if trade_from_resource == trade_to_resource:
                 continue
             if trade_from_resource == "do_nothing":
@@ -118,18 +116,13 @@ class RandomPlayerController(PlayerController):
             desired_trades.append((trade_from_resource, trade_to_resource))
             available_resources[trade_from_resource] -= Shared_Constants.BANK_TRADE_PRICE
         return {
-            "action_type": Shared_Constants.ActionType.TRADE_RESOURCES,
+            "action_type": ActionType.TRADE_RESOURCES,
             "desired_trades": desired_trades
         }
 
     def purchase_buildings_and_cards(self, observation: Tuple[Board, Dict[str, int]]):
         available_resources = observation[1].copy()
-        valid_purchases = ["road", "settlement", "city", "development_card"]
-        valid_purchases = list(filter(
-            lambda purchase: self._can_afford(available_resources=available_resources, purchase=purchase),
-            valid_purchases
-        ))
-        valid_purchases.append("do_nothing")
+        valid_purchases = self._get_valid_purchases(available_resources=available_resources)
         purchased_roads, purchased_settlements, purchased_cities, purchased_development_cards = ([], [], [], [])
         upcoming_purchase = random.choice(valid_purchases)
         while upcoming_purchase != "do_nothing":
@@ -162,7 +155,7 @@ class RandomPlayerController(PlayerController):
             valid_purchases.append("do_nothing")
             upcoming_purchase = random.choice(valid_purchases)
         return {
-            "action_type": Shared_Constants.ActionType.BUILDINGS_PURCHASE,
+            "action_type": ActionType.BUILDINGS_PURCHASE,
             "purchases": {
                 "roads": purchased_roads,
                 "settlements": purchased_settlements,

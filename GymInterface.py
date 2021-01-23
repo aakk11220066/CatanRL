@@ -5,7 +5,8 @@ sys.path.append("C:\ProgramData\Miniconda3\Lib\site-packages")  # FIXME: DELETE 
 import gym
 from CatanGame.CatanGame import CatanGame
 from CatanGame.Exceptions import InvalidActionException
-from CatanGame.Shared_Constants import PlayerNumber, PointCoordinate, RoadPlacement, ActionType
+from CatanGame.Shared_Constants import PlayerNumber, PointCoordinate, RoadPlacement
+from PlayerControllers.RLPlayerControllerHelpers.Shared_Constants import ActionType
 
 
 class GymInterface(gym.Env):
